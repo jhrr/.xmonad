@@ -1,0 +1,4 @@
+.xmonad
+=======
+
+xmonad configuration files
