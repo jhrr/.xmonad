@@ -3,7 +3,7 @@ import XMonad
 
 myTerminal          = "urxvt"
 myModMask           = mod4Mask
-myBorderWidth       = 3
+myBorderWidth       = 2
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
 
