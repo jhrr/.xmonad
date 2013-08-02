@@ -1,4 +1,5 @@
 import XMonad
+import XMonad.Hooks.DynamicLog
 
 
 myTerminal          = "urxvt"
@@ -7,10 +8,10 @@ myBorderWidth       = 2
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
 
-myWorkspaces        = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myWorkspaces 	    = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
 
-main = do
-  xmonad $ defaultConfig
+
+main = xmonad =<< xmobar defaultConfig
     { terminal          = myTerminal
     , modMask           = myModMask
     , borderWidth       = myBorderWidth
