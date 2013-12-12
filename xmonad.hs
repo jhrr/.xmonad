@@ -17,8 +17,7 @@ myFocusFollowsMouse = True
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "β" ]
-   , [ className =? "Firefox-bin" --> doShift "γ" ]
-   , [(className =? "Firefox" <&&> resource =? "Dialog") --> doFloat] ]
+   , [ className =? "Firefox" --> doShift "γ" ] ]
 
 
 myKeys :: [ (String, X()) ]
