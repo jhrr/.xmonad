@@ -13,14 +13,18 @@ myModMask           = mod4Mask
 myWorkspaces 	    = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
 myFocusFollowsMouse = True
 
+
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
    [ [ className =? "Firefox-bin" --> doShift "γ" ]
    , [(className =? "Firefox" <&&> resource =? "Dialog") --> doFloat] ]
 
-myKeys :: [(String, X())]
-myKeys = [ ("M-g" , spawn "firefox") ]
 
+myKeys :: [ (String, X()) ]
+myKeys =  [ ("M-g" , spawn "firefox") ]
+
+
+main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
     xmonad $ defaultConfig
