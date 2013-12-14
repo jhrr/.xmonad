@@ -11,7 +11,7 @@ import System.IO
 myTerminal          = "urxvt"
 myBorderWidth       = 2
 myModMask           = mod4Mask
-myWorkspaces 	    = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
+myWorkspaces        = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
 myFocusFollowsMouse = True
 
 
