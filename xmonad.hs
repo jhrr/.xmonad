@@ -2,6 +2,7 @@ import XMonad
 import XMonad.Actions.WorkspaceNames()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat)
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run(spawnPipe)
 import System.IO
@@ -17,11 +18,20 @@ myFocusFollowsMouse = True
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "β" ]
-   , [ className =? "Firefox" --> doShift "γ" ] ]
+   , [ className =? "Chromium" --> doShift "γ" ]
+   , [ className =? "Firefox" --> doShift "γ" ]
+   , [ className =? "Vlc" --> doShift "θ" ]
+   , [ className =? "Skype" --> doShift "ι" ]
+   , [ isFullscreen --> doFullFloat]
+   , [ isDialog --> doCenterFloat] ]
 
 
 myKeys :: [ (String, X()) ]
-myKeys =  [ ("M-g" , spawn "firefox") ]
+myKeys =  [ ("M-g" , spawn "firefox")
+          , ("M-v" , spawn "vlc")
+          -- , ("M-<xK_Print>" , spawn "scrot")
+          -- , ("M-S-<xK_Print>" , spawn "sleep 0.2; scrot -s")
+          ]
 
 
 main :: IO ()
