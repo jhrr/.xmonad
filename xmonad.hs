@@ -39,18 +39,25 @@ myKeys =  [ ("M-g" , spawn "firefox")
           ]
 
 
+myLogHook :: Handle -> X ()
+myLogHook xmproc = do
+    dynamicLogWithPP $ xmobarPP
+        { ppOutput = hPutStrLn xmproc
+        , ppTitle = xmobarColor "green" "" . shorten 100
+        , ppHidden = xmobarColor "white" "" . noScratchPad
+        , ppHiddenNoWindows = xmobarColor "gray" ""
+        }
+        where
+          noScratchPad ws = if ws == "NSP" then "" else ws
+
+
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
     xmonad $ defaultConfig
-        { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads <+> manageHook defaultConfig
-        , layoutHook = avoidStruts $ layoutHook defaultConfig
-        , logHook    = dynamicLogWithPP xmobarPP
-                               { ppOutput          = hPutStrLn xmproc
-			       , ppTitle           = xmobarColor "green" "" . shorten 100
-			       , ppHidden          = xmobarColor "white" ""
-			       , ppHiddenNoWindows = xmobarColor "gray" ""
-			       }
+        { manageHook        = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads <+> manageHook defaultConfig
+        , layoutHook        = avoidStruts $ layoutHook defaultConfig
+        , logHook           = myLogHook xmproc
         , terminal          = myTerminal
         , modMask           = myModMask
         , borderWidth       = myBorderWidth
