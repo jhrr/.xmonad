@@ -1,12 +1,14 @@
 import XMonad
+import XMonad.ManageHook
 import XMonad.Actions.WorkspaceNames()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat)
+import XMonad.Util.NamedScratchpad
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run(spawnPipe)
 import System.IO
-
+import XMonad.StackSet as W
 
 myTerminal          = "urxvt"
 myBorderWidth       = 2
@@ -31,14 +33,17 @@ myKeys =  [ ("M-g" , spawn "firefox")
           , ("M-v" , spawn "vlc")
           -- , ("M-<xK_Print>" , spawn "scrot")
           -- , ("M-S-<xK_Print>" , spawn "sleep 0.2; scrot -s")
+          , ("M-h" , spBeckon "htop")
           ]
-
 
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
     xmonad $ defaultConfig
-        { manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig
+        { manageHook = manageDocks <+>
+                       myManageHook <+>
+                       manageHook defaultConfig <+>
+                       namedScratchpadManageHook sessionScratchpads
         , layoutHook = avoidStruts $ layoutHook defaultConfig
         , logHook    = dynamicLogWithPP xmobarPP
                                { ppOutput          = hPutStrLn xmproc
@@ -50,5 +55,23 @@ main = do
         , modMask           = myModMask
         , borderWidth       = myBorderWidth
         , focusFollowsMouse = myFocusFollowsMouse
-        , workspaces        = myWorkspaces
+        , XMonad.workspaces = myWorkspaces
 	} `additionalKeysP` myKeys
+
+
+-- Helpers
+roleName :: Query String
+roleName = stringProperty "WM_WINDOW_ROLE"
+
+spBeckon :: String -> X ()
+spBeckon = namedScratchpadAction sessionScratchpads
+
+centeredFloat :: Rational -> Rational -> ManageHook
+centeredFloat widthProportion heightProportion =
+  customFloating $ W.RationalRect l t widthProportion heightProportion
+    where t = (1 - heightProportion)/2
+          l = (1 - widthProportion)/2
+
+-- Scratchpads
+sessionScratchpads :: [NamedScratchpad]
+sessionScratchpads = [ NS "htop" "urxvt -e htop" (roleName =? "htop") (centeredFloat 0.8 0.8) ]
