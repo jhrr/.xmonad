@@ -35,8 +35,7 @@ myKeys =  [ ("M-g" , spawn "firefox")
           , ("M-v" , spawn "vlc")
           -- , ("M-<xK_Print>" , spawn "scrot")
           -- , ("M-S-<xK_Print>" , spawn "sleep 0.2; scrot -s")
-          , ("M-h" , spBeckon "htop")
-          ]
+          , ("M-h" , spBeckon "htop") ]
 
 
 myLogHook :: Handle -> X ()
@@ -55,7 +54,7 @@ main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
     xmonad $ defaultConfig
-        { manageHook        = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads <+> manageHook defaultConfig
+        { manageHook        = manageDocks <+> namedScratchpadManageHook scratchpads <+> myManageHook
         , layoutHook        = avoidStruts $ layoutHook defaultConfig
         , logHook           = myLogHook xmproc
         , terminal          = myTerminal
