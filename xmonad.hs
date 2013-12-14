@@ -3,8 +3,8 @@ import XMonad.ManageHook()
 import XMonad.Actions.WorkspaceNames()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat)
-import XMonad.Layout.NoBorders (smartBorders)
+import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat, doRectFloat)
+import XMonad.Hooks.UrgencyHook
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.Run(spawnPipe)
@@ -33,9 +33,11 @@ myManageHook = composeAll . concat $
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-g" , spawn "firefox")
           , ("M-v" , spawn "vlc")
-          -- , ("M-<xK_Print>" , spawn "scrot")
-          -- , ("M-S-<xK_Print>" , spawn "sleep 0.2; scrot -s")
-          , ("M-h" , spBeckon "htop") ]
+          , ("M-S-p" , spawn "scrot")
+          , ("M-C-p" , spawn "sleep 0.2; scrot -s")
+          , ("M-a" , spBeckon "alsamixer")
+          , ("M-h" , spBeckon "htop")
+          , ("M-u" , focusUrgent) ]
 
 
 myLogHook :: Handle -> X ()
@@ -50,11 +52,31 @@ myLogHook xmproc = do
           noScratchPad ws = if ws == "NSP" then "" else ws
 
 
+spBeckon :: String -> X ()
+spBeckon = namedScratchpadAction scratchpads
+
+centerScreen :: Rational -> ManageHook
+centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
+
+scratchpads :: [NamedScratchpad]
+scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
+              , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7) ]
+
+
+-- > xmonad $ withUrgencyHookC myUrgencyConfig $ defaultConfig
+
+-- myUrgencyConfig :: UrgencyConfig
+-- myUrgencyConfig = urgencyConfig { suppressWhen = OnScreen }
+
+-- myUrgencyHintFgColor = "#000000"
+-- myUrgencyHintBgColor = "#ff6565"
+
+
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
-    xmonad $ defaultConfig
-        { manageHook        = manageDocks <+> namedScratchpadManageHook scratchpads <+> myManageHook
+    xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
+        { manageHook        = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
         , layoutHook        = avoidStruts $ layoutHook defaultConfig
         , logHook           = myLogHook xmproc
         , terminal          = myTerminal
@@ -63,17 +85,3 @@ main = do
         , focusFollowsMouse = myFocusFollowsMouse
         , XMonad.workspaces = myWorkspaces
 	} `additionalKeysP` myKeys
-
-
--- Scratchpads
-spBeckon :: String -> X ()
-spBeckon = namedScratchpadAction scratchpads
-
-centeredFloat :: Rational -> Rational -> ManageHook
-centeredFloat widthProportion heightProportion =
-  customFloating $ W.RationalRect l t widthProportion heightProportion
-    where t = (1 - heightProportion)/2
-          l = (1 - widthProportion)/2
-
-scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centeredFloat 0.8 0.8) ]
