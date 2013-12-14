@@ -44,7 +44,7 @@ myLogHook xmproc = do
         { ppOutput = hPutStrLn xmproc
         , ppTitle = xmobarColor "green" "" . shorten 100
         , ppHidden = xmobarColor "white" "" . noScratchPad
-        , ppHiddenNoWindows = xmobarColor "gray" ""
+        , ppHiddenNoWindows = xmobarColor "gray" "" . noScratchPad
         }
         where
           noScratchPad ws = if ws == "NSP" then "" else ws
