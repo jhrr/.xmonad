@@ -31,13 +31,14 @@ myManageHook = composeAll . concat $
 
 
 myKeys :: [ (String, X()) ]
-myKeys =  [ ("M-g" , spawn "firefox")
-          , ("M-v" , spawn "vlc")
+myKeys =  [ ("M-g"   , spawn "firefox")
+          , ("M-v"   , spawn "vlc")
           , ("M-S-p" , spawn "scrot")
           , ("M-C-p" , spawn "sleep 0.2; scrot -s")
-          , ("M-a" , spBeckon "alsamixer")
-          , ("M-h" , spBeckon "htop")
-          , ("M-u" , focusUrgent) ]
+          , ("M-a"   , spBeckon "alsamixer")
+          , ("M-h"   , spBeckon "htop")
+          , ("M-S-h" , spBeckon "ghci")
+          , ("M-u"   , focusUrgent) ]
 
 
 myLogHook :: Handle -> X ()
@@ -60,7 +61,8 @@ centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
 
 scratchpads :: [NamedScratchpad]
 scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
-              , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7) ]
+              , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
+              , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7) ]
 
 
 -- > xmonad $ withUrgencyHookC myUrgencyConfig $ defaultConfig
