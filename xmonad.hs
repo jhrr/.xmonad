@@ -47,7 +47,8 @@ myKeys =  [ ("M-g", spawn "firefox")
           , ("M-S-h", spBeckon "ghci")
           , ("M-S-p", spBeckon "ipython")
           , ("M-u", focusUrgent)
-          , ("M-/", submap . mySearchMap $ myPromptSearch) ]
+          , ("M-/", submap . mySearchMap $ myPromptSearch)
+          , ("M-C-/", submap . mySearchMap $ mySelectSearch) ]
 
 
 mySearchMap method = M.fromList $
@@ -71,6 +72,9 @@ myPromptSearch :: SearchEngine -> X ()
 myPromptSearch (SearchEngine _ site)
   = inputPrompt myXPConfig "Search" ?+ \s ->
       (search "firefox" site s >> viewWeb)
+
+-- Select search: do a search based on the X selection
+mySelectSearch eng = selectSearch eng >> viewWeb
 
 viewWeb = windows (W.view "γ")
 
@@ -99,11 +103,11 @@ centerScreen :: Rational -> ManageHook
 centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
 
 scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
-              , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
-              , NS "erl" "urxvt -e erl" (title =? "erl") (centerScreen 0.7)
-              , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7)
-              , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7) ]
+scratchpads = [ NS "htop" (myTerminal ++ "-e htop") (title =? "htop") (centerScreen 0.7)
+              , NS "alsamixer" (myTerminal ++ "-e alsamixer") (title =? "alsamixer") (centerScreen 0.7)
+              , NS "erl" (myTerminal ++ "-e erl") (title =? "erl") (centerScreen 0.7)
+              , NS "ghci" (myTerminal ++ "-e ghci") (title =? "ghci") (centerScreen 0.7)
+              , NS "ipython" (myTerminal ++ "-e ipython") (title =? "ipython") (centerScreen 0.7) ]
 
 
 -- > xmonad $ withUrgencyHookC myUrgencyConfig $ defaultConfig
