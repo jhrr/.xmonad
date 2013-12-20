@@ -49,7 +49,7 @@ myKeys =  [ ("M-g", spawn "firefox")
           , ("M-u", focusUrgent)
           , ("M-/", submap . mySearchMap $ myPromptSearch) ]
 
--- Searches
+
 mySearchMap method = M.fromList $
                      [ ((0, xK_g), method google)
                      , ((0, xK_w), method wikipedia)
@@ -65,9 +65,8 @@ mySearchMap method = M.fromList $
 images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
 pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
--- Prompt search: get input from the user via a prompt, then
---   run the search in firefox and automatically switch to the web
---   workspace
+-- Prompt search: get input from the user via a prompt, then run the
+--   search in firefox and automatically switch to the web workspace
 myPromptSearch :: SearchEngine -> X ()
 myPromptSearch (SearchEngine _ site)
   = inputPrompt myXPConfig "Search" ?+ \s ->
