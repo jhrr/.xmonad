@@ -21,23 +21,25 @@ myFocusFollowsMouse = True
 
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
-   [ [ className =? "Emacs" --> doShift "β" ]
-   , [ className =? "Chromium" --> doShift "γ" ]
-   , [ className =? "Firefox" --> doShift "γ" ]
-   , [ className =? "Vlc" --> doShift "θ" ]
-   , [ className =? "Skype" --> doShift "ι" ]
-   , [ isFullscreen --> doFullFloat]
-   , [ isDialog --> doCenterFloat] ]
+   [ [ className =? "Emacs"      --> doShift "β" ]
+   , [ className =? "Chromium"   --> doShift "γ" ]
+   , [ className =? "Firefox"    --> doShift "γ" ]
+   , [ className =? "Vlc"        --> doShift "θ" ]
+   , [ className =? "Skype"      --> doShift "ι" ]
+   , [ isFullscreen              --> doFullFloat]
+   , [ isDialog                  --> doCenterFloat] ]
 
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-g"   , spawn "firefox")
           , ("M-v"   , spawn "vlc")
-          , ("M-S-p" , spawn "scrot")
-          , ("M-C-p" , spawn "sleep 0.2; scrot -s")
+          , ("M-<Print>" , spawn "scrot")
+          , ("M-S-<Print>" , spawn "sleep 0.2; scrot -s")
           , ("M-a"   , spBeckon "alsamixer")
           , ("M-h"   , spBeckon "htop")
+          , ("M-S-e" , spBeckon "erl")
           , ("M-S-h" , spBeckon "ghci")
+          , ("M-S-p" , spBeckon "ipython")
           , ("M-u"   , focusUrgent) ]
 
 
@@ -62,7 +64,10 @@ centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
 scratchpads :: [NamedScratchpad]
 scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
-              , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7) ]
+              , NS "erl" "urxvt -e erl" (title =? "erl") (centerScreen 0.7)
+              , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7)
+              , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
+              ]
 
 
 -- > xmonad $ withUrgencyHookC myUrgencyConfig $ defaultConfig
