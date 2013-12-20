@@ -55,7 +55,7 @@ myKeys =  [ ("M-g", spawn "firefox")
           , ("M-S-e", spBeckon "erl")
           , ("M-S-h", spBeckon "ghci")
           , ("M-S-p", spBeckon "ipython")
-          -- TODO: org-750 pad?
+          -- TODO: org-750 pad/topicspace?
           , ("M-u", focusUrgent)
           , ("M-/", submap . mySearchMap $ myPromptSearch)
           , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
@@ -128,9 +128,11 @@ scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
 
 -- myUrgencyConfig :: UrgencyConfig
 -- myUrgencyConfig = urgencyConfig { suppressWhen = OnScreen }
-
 -- myUrgencyHintFgColor = "#000000"
 -- myUrgencyHintBgColor = "#ff6565"
+
+
+-- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
 
 
 main :: IO ()
