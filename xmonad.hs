@@ -48,7 +48,7 @@ myKeys =  [ ("M-g", spawn "firefox")
           , ("M-S-p", spBeckon "ipython")
           , ("M-u", focusUrgent)
           , ("M-/", submap . mySearchMap $ myPromptSearch)
-          , ("M-C-/", submap . mySearchMap $ mySelectSearch) ]
+          , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
 
 
 mySearchMap method = M.fromList $
@@ -62,9 +62,9 @@ mySearchMap method = M.fromList $
                      , ((0, xK_i), method images)
                      , ((0, xK_p), method pypi)
                      ]
-
-images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
-pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
+                     where
+                       images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
+                       pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
 -- Prompt search: get input from the user via a prompt, then run the
 --   search in firefox and automatically switch to the web workspace
@@ -103,11 +103,11 @@ centerScreen :: Rational -> ManageHook
 centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
 
 scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "htop" (myTerminal ++ "-e htop") (title =? "htop") (centerScreen 0.7)
-              , NS "alsamixer" (myTerminal ++ "-e alsamixer") (title =? "alsamixer") (centerScreen 0.7)
-              , NS "erl" (myTerminal ++ "-e erl") (title =? "erl") (centerScreen 0.7)
-              , NS "ghci" (myTerminal ++ "-e ghci") (title =? "ghci") (centerScreen 0.7)
-              , NS "ipython" (myTerminal ++ "-e ipython") (title =? "ipython") (centerScreen 0.7) ]
+scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
+              , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
+              , NS "erl" "urxvt -e erl" (title =? "erl") (centerScreen 0.7)
+              , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7)
+              , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7) ]
 
 
 -- > xmonad $ withUrgencyHookC myUrgencyConfig $ defaultConfig
