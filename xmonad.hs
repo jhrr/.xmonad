@@ -18,10 +18,19 @@ import XMonad.StackSet as W
 import qualified Data.Map as M
 
 
-myTerminal          = "urxvt"
-myBorderWidth       = 2
-myModMask           = mod4Mask
-myWorkspaces        = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
+myTerminal :: [Char]
+myTerminal = "urxvt"
+
+myBorderWidth :: Dimension
+myBorderWidth = 2
+
+myModMask :: KeyMask
+myModMask = mod4Mask
+
+myWorkspaces :: [[Char]]
+myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
+
+myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
 
 
@@ -46,11 +55,13 @@ myKeys =  [ ("M-g", spawn "firefox")
           , ("M-S-e", spBeckon "erl")
           , ("M-S-h", spBeckon "ghci")
           , ("M-S-p", spBeckon "ipython")
+          -- TODO: org-750 pad?
           , ("M-u", focusUrgent)
           , ("M-/", submap . mySearchMap $ myPromptSearch)
           , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
 
 
+mySearchMap :: (SearchEngine -> a) -> M.Map (KeyMask, KeySym) a
 mySearchMap method = M.fromList $
                      [ ((0, xK_g), method google)
                      , ((0, xK_w), method wikipedia)
@@ -74,10 +85,13 @@ myPromptSearch (SearchEngine _ site)
       (search "firefox" site s >> viewWeb)
 
 -- Select search: do a search based on the X selection
+mySelectSearch :: SearchEngine -> X ()
 mySelectSearch eng = selectSearch eng >> viewWeb
 
+viewWeb :: X ()
 viewWeb = windows (W.view "γ")
 
+myXPConfig :: XPConfig
 myXPConfig = defaultXPConfig
     { fgColor = "#000000"
     , bgColor = "#ff6565"
