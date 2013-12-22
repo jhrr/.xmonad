@@ -1,21 +1,57 @@
 import XMonad
-import XMonad.ManageHook()
-import XMonad.Actions.WorkspaceNames()
-import XMonad.Actions.Submap
 import XMonad.Actions.Search hiding (Query, images)
+import XMonad.Actions.Submap
+import XMonad.Actions.WorkspaceNames()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat, doRectFloat)
 import XMonad.Hooks.UrgencyHook
+import XMonad.ManageHook()
 import XMonad.Prompt
 import XMonad.Prompt.Input
+import XMonad.Prompt.Ssh
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.EZConfig (additionalKeysP)
-import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.Run
+
 import System.IO
+import System.Posix.Unistd()
 
 import XMonad.StackSet as W
 import qualified Data.Map as M
+
+
+-- topic layer -- abstractions over common work patterns
+-- application layer -- control over individual programs
+-- shortcuts/bindings vs. prompts
+
+
+main :: IO ()
+main = do
+    xmproc <- spawnPipe "xmobar"
+    -- host <- getHost
+    xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
+        { manageHook        = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
+        , layoutHook        = avoidStruts $ layoutHook defaultConfig
+        , logHook           = myLogHook xmproc
+        , terminal          = myTerminal
+        , modMask           = myModMask
+        , borderWidth       = myBorderWidth
+        , focusFollowsMouse = myFocusFollowsMouse
+        , XMonad.workspaces = myWorkspaces
+	} `additionalKeysP` myKeys
+
+
+-- data Host = Laptop | Desktop | Other
+--   deriving (Eq, Read, Show)
+
+-- getHost :: IO Host
+-- getHost = do
+--   hostName <- nodeName `fmap` getSystemID
+--   return $ case hostName of
+--     "paradise" -> Laptop
+--     "" -> Desktop
+--     _ -> Other
 
 
 myTerminal :: [Char]
@@ -33,6 +69,10 @@ myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
 
+-- ircAction :: Host -> X ()
+-- ircAction host = case host of
+--   Laptop _ -> runInTerm "" "ssh <your screen server>"
+--   Desktop -> runInTerm "" "screen -dRR"
 
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
@@ -46,17 +86,20 @@ myManageHook = composeAll . concat $
 
 
 myKeys :: [ (String, X()) ]
-myKeys =  [ ("M-g", spawn "firefox")
+myKeys =  [ ("M-u", focusUrgent)
+            -- spawning
+          , ("M-g", spawn "firefox")
           , ("M-v", spawn "vlc")
           , ("M-<Print>", spawn "scrot")
           , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
+            -- scratchpads
           , ("M-a", spBeckon "alsamixer")
-          , ("M-h", spBeckon "htop")
+          , ("M-t", spBeckon "htop")
           , ("M-S-e", spBeckon "erl")
           , ("M-S-h", spBeckon "ghci")
           , ("M-S-p", spBeckon "ipython")
-          -- TODO: org-750 pad/topicspace?
-          , ("M-u", focusUrgent)
+            -- searches
+          , ("M-p s", sshPrompt myXPConfig)
           , ("M-/", submap . mySearchMap $ myPromptSearch)
           , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
 
@@ -105,6 +148,7 @@ myLogHook xmproc = do
         , ppTitle = xmobarColor "green" "" . shorten 100
         , ppHidden = xmobarColor "white" "" . noScratchPad
         , ppHiddenNoWindows = xmobarColor "gray" "" . noScratchPad
+        , ppUrgent = xmobarColor "yellow" "red" . xmobarStrip
         }
         where
           noScratchPad ws = if ws == "NSP" then "" else ws
@@ -124,27 +168,4 @@ scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7) ]
 
 
--- > xmonad $ withUrgencyHookC myUrgencyConfig $ defaultConfig
-
--- myUrgencyConfig :: UrgencyConfig
--- myUrgencyConfig = urgencyConfig { suppressWhen = OnScreen }
--- myUrgencyHintFgColor = "#000000"
--- myUrgencyHintBgColor = "#ff6565"
-
-
 -- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
-
-
-main :: IO ()
-main = do
-    xmproc <- spawnPipe "xmobar"
-    xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
-        { manageHook        = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
-        , layoutHook        = avoidStruts $ layoutHook defaultConfig
-        , logHook           = myLogHook xmproc
-        , terminal          = myTerminal
-        , modMask           = myModMask
-        , borderWidth       = myBorderWidth
-        , focusFollowsMouse = myFocusFollowsMouse
-        , XMonad.workspaces = myWorkspaces
-	} `additionalKeysP` myKeys
