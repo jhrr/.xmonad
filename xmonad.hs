@@ -25,6 +25,10 @@ import qualified Data.Map as M
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
 
+-- TODO:
+-- yeganesh: exec `yeganesh -x -- -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'`
+-- notifications -- git
+
 
 main :: IO ()
 main = do
@@ -42,15 +46,16 @@ main = do
 	} `additionalKeysP` myKeys
 
 
--- data Host = Laptop | Desktop | Other
+-- Bool informs us if the machine has a Windows key
+-- data Host = Laptop Bool | Desktop Bool | Other
 --   deriving (Eq, Read, Show)
 
 -- getHost :: IO Host
 -- getHost = do
 --   hostName <- nodeName `fmap` getSystemID
 --   return $ case hostName of
---     "paradise" -> Laptop
---     "" -> Desktop
+--     "paradise" -> Laptop True
+--     "" -> Desktop True
 --     _ -> Other
 
 
@@ -71,7 +76,7 @@ myFocusFollowsMouse = True
 
 -- ircAction :: Host -> X ()
 -- ircAction host = case host of
---   Laptop _ -> runInTerm "" "ssh <your screen server>"
+--   Laptop -> runInTerm "" "ssh <your screen server>"
 --   Desktop -> runInTerm "" "screen -dRR"
 
 myManageHook :: ManageHook
