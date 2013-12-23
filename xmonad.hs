@@ -17,7 +17,7 @@ import XMonad.Util.Run
 import System.IO
 import System.Posix.Unistd()
 
-import XMonad.StackSet as W
+import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
 
@@ -25,22 +25,18 @@ import qualified Data.Map as M
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
 
--- TODO:
--- yeganesh: exec `yeganesh -x -- -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'`
--- notifications -- git
-
 
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar"
     -- host <- getHost
     xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
-        { manageHook        = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
-        , layoutHook        = avoidStruts $ layoutHook defaultConfig
-        , logHook           = myLogHook xmproc
-        , terminal          = myTerminal
-        , modMask           = myModMask
-        , borderWidth       = myBorderWidth
+        { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
+        , layoutHook = avoidStruts $ layoutHook defaultConfig
+        , logHook = myLogHook xmproc
+        , terminal = myTerminal
+        , modMask = myModMask
+        , borderWidth = myBorderWidth
         , focusFollowsMouse = myFocusFollowsMouse
         , XMonad.workspaces = myWorkspaces
 	} `additionalKeysP` myKeys
@@ -86,6 +82,7 @@ myManageHook = composeAll . concat $
    , [ className =? "Firefox" --> doShift "γ" ]
    , [ className =? "Vlc" --> doShift "θ" ]
    , [ className =? "Skype" --> doShift "ι" ]
+   , [ className =? "Transmission" --> doShift "ι" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
@@ -118,12 +115,15 @@ mySearchMap method = M.fromList $
                      , ((0, xK_m), method maps)
                      , ((0, xK_y), method youtube)
                        -- custom searches
+                     , ((0, xK_b), method pb)
                      , ((0, xK_i), method images)
                      , ((0, xK_p), method pypi)
                      ]
                      where
+                       pb = searchEngine "pb" "http://bayproxy.me/search/"
                        images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
+
 
 -- Prompt search: get input from the user via a prompt, then run the
 --   search in firefox and automatically switch to the web workspace
