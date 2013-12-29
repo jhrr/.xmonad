@@ -80,6 +80,7 @@ myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "β" ]
    , [ className =? "Chromium" --> doShift "γ" ]
    , [ className =? "Firefox" --> doShift "γ" ]
+   , [ className =? "Zathura" --> doShift "δ" ]
    , [ className =? "Vlc" --> doShift "θ" ]
    , [ className =? "Skype" --> doShift "ι" ]
    , [ className =? "Transmission" --> doShift "ι" ]
