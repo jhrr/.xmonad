@@ -83,7 +83,7 @@ myManageHook = composeAll . concat $
    , [ className =? "Zathura" --> doShift "δ" ]
    , [ className =? "Vlc" --> doShift "θ" ]
    , [ className =? "Skype" --> doShift "ι" ]
-   , [ className =? "Transmission" --> doShift "ι" ]
+   , [ className =? "Transmission-gtk" --> doShift "ι" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
