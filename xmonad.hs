@@ -116,11 +116,13 @@ mySearchMap method = M.fromList $
                      , ((0, xK_m), method maps)
                      , ((0, xK_y), method youtube)
                        -- custom searches
+                     , ((0, xK_d), method discogs)
                      , ((0, xK_i), method images)
                      , ((0, xK_t), method pb)
                      , ((0, xK_p), method pypi)
                      ]
                      where
+                       discogs = searchEngine "discogs" "http://www.discogs.com/search/?q="
                        images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
                        pb = searchEngine "pb" "http://bayproxy.me/search/"
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
