@@ -55,7 +55,7 @@ main = do
 --     _ -> Other
 
 
-myTerminal :: [Char]
+myTerminal :: String
 myTerminal = "urxvt"
 
 myBorderWidth :: Dimension
@@ -64,7 +64,7 @@ myBorderWidth = 2
 myModMask :: KeyMask
 myModMask = mod4Mask
 
-myWorkspaces :: [[Char]]
+myWorkspaces :: [String]
 myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
 
 myFocusFollowsMouse :: Bool
@@ -109,7 +109,7 @@ myKeys =  [ ("M-u", focusUrgent)
 
 
 mySearchMap :: (SearchEngine -> a) -> M.Map (KeyMask, KeySym) a
-mySearchMap method = M.fromList $
+mySearchMap method = M.fromList
                      [ ((0, xK_g), method google)
                      , ((0, xK_w), method wikipedia)
                      , ((0, xK_h), method hoogle)
@@ -134,7 +134,7 @@ mySearchMap method = M.fromList $
 myPromptSearch :: SearchEngine -> X ()
 myPromptSearch (SearchEngine _ site)
   = inputPrompt myXPConfig "Search" ?+ \s ->
-      (search "firefox" site s >> viewWeb)
+      search "firefox" site s >> viewWeb
 
 -- Select search: do a search based on the X selection
 mySelectSearch :: SearchEngine -> X ()
@@ -151,7 +151,7 @@ myXPConfig = defaultXPConfig
 
 
 myLogHook :: Handle -> X ()
-myLogHook xmproc = do
+myLogHook xmproc =
     dynamicLogWithPP $ xmobarPP
         { ppOutput = hPutStrLn xmproc
         , ppTitle = xmobarColor "green" "" . shorten 100
@@ -170,10 +170,10 @@ centerScreen :: Rational -> ManageHook
 centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
 
 scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
-              , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
+scratchpads = [ NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
               , NS "erl" "urxvt -e erl" (title =? "erl") (centerScreen 0.7)
               , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7)
+              , NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
 
