@@ -97,6 +97,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
             -- scratchpads
           , ("M-a", spBeckon "alsamixer")
+          , ("M-n", spBeckon "ncmpcpp")
           , ("M-t", spBeckon "htop")
           , ("M-S-e", spBeckon "erl")
           , ("M-S-h", spBeckon "ghci")
