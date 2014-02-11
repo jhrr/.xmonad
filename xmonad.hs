@@ -173,7 +173,8 @@ scratchpads = [ NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
               , NS "erl" "urxvt -e erl" (title =? "erl") (centerScreen 0.7)
               , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7)
-              , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7) ]
+              , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
+              , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
 
 
 -- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
