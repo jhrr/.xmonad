@@ -93,6 +93,10 @@ myKeys =  [ ("M-u", focusUrgent)
             -- spawning
           , ("M-g", spawn "firefox")
           , ("M-v", spawn "vlc")
+          , ("M-<Backspace>", spawn "mpc toggle")
+          , ("<XF86AudioNext>", spawn "mpc next")
+          , ("<XF86AudioPrev>", spawn "mpc prev")
+          , ("C-M-r", spawn "mpc random")  -- toggle random play mode
           , ("M-<Print>", spawn "scrot")
           , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
             -- scratchpads
