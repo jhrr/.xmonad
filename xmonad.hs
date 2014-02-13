@@ -97,6 +97,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("<XF86AudioNext>", spawn "mpc next")
           , ("<XF86AudioPrev>", spawn "mpc prev")
           , ("C-M-r", spawn "mpc random")  -- toggle random play mode
+          -- , ("M-<F1>", spawn "mpc pause; xscreensaver-command -lock")
           , ("M-<Print>", spawn "scrot")
           , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
             -- scratchpads
