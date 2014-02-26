@@ -107,10 +107,34 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-S-e", spBeckon "erl")
           , ("M-S-h", spBeckon "ghci")
           , ("M-S-p", spBeckon "ipython")
+            -- screens
+          -- , ("M-s", nextScreen)
+          -- , ("M-w", swapNextScreen)
+          -- , ("M-e", shiftNextScreen)
             -- searches
           , ("M-p s", sshPrompt myXPConfig)
           , ("M-/", submap . mySearchMap $ myPromptSearch)
           , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
+
+          ++
+
+          [ (otherModMasks ++ "M-" ++ [key], action tag)
+          | (tag, key)  <- zip myWorkspaces "123456789"
+          , (otherModMasks, action) <- [ ("", windows . W.greedyView) -- was W.greedyView
+                                       , ("S-", windows . W.shift)] ]
+
+
+          -- mod-[1..],       Switch to workspace N
+          -- mod-shift-[1..], Move client to workspace N
+          -- mod-ctrl-[1..],  Switch to workspace N on other screen
+
+          -- [ (m ++ "M-" ++ [k], f i)
+          --     | (i, k) <- zip (XMonad.workspaces conf) "123456789-=[]\\"
+          --     , (f, m) <- [ (windows . W.shift, "S-")
+          --                 , (goto', "")
+          --                 , (\ws -> nextScreen >> (goto' $ ws), "C-")
+          --                 ]]
+
 
 
 mySearchMap :: (SearchEngine -> a) -> M.Map (KeyMask, KeySym) a
