@@ -3,3 +3,4 @@ xmonad-x86_64-linux
 *.hi
 *.o
 history
+flycheck_xmonad.hs

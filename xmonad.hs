@@ -36,10 +36,15 @@ main = do
         , logHook = myLogHook xmproc
         , terminal = myTerminal
         , modMask = myModMask
+
+        -- , modMask = if host == Laptop False
+        --             then modMask def
+        --             else mod4Mask
+
         , borderWidth = myBorderWidth
         , focusFollowsMouse = myFocusFollowsMouse
         , XMonad.workspaces = myWorkspaces
-	} `additionalKeysP` myKeys
+        } `additionalKeysP` myKeys
 
 
 -- Bool informs us if the machine has a Windows key
@@ -50,8 +55,8 @@ main = do
 -- getHost = do
 --   hostName <- nodeName `fmap` getSystemID
 --   return $ case hostName of
---     "paradise" -> Laptop True
---     "" -> Desktop True
+--     "paradise" -> Thinkpad True
+--     "" -> Powerbook True
 --     _ -> Other
 
 
@@ -73,7 +78,8 @@ myFocusFollowsMouse = True
 -- ircAction :: Host -> X ()
 -- ircAction host = case host of
 --   Laptop -> runInTerm "" "ssh <your screen server>"
---   Desktop -> runInTerm "" "screen -dRR"
+--   Powerbook -> runInTerm "" "ssh <your screen server>"
+--   Desktop -> runInTerm "" "tmux attach -t irc"
 
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
