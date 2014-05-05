@@ -27,7 +27,8 @@ import qualified Data.Map as M
 
 
 main :: IO ()
-main = do
+main
+  = do
     xmproc <- spawnPipe "xmobar"
     -- host <- getHost
     xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
@@ -46,6 +47,8 @@ main = do
         , XMonad.workspaces = myWorkspaces
         } `additionalKeysP` myKeys
 
+-- myUrgencyHook = withUrgencyHook dzenUrgencyHook
+--     { args = ["-bg", "yellow", "-fg", "black"] }
 
 -- Bool informs us if the machine has a Windows key
 -- data Host = Laptop Bool | Desktop Bool | Other
@@ -56,9 +59,8 @@ main = do
 --   hostName <- nodeName `fmap` getSystemID
 --   return $ case hostName of
 --     "paradise" -> Thinkpad True
---     "" -> Powerbook True
+--     "" -> Macbook True
 --     _ -> Other
-
 
 myTerminal :: String
 myTerminal = "urxvt"
@@ -98,6 +100,7 @@ myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
             -- spawning
           , ("M-g", spawn "firefox")
+          , ("M-c", spawn "chromium")
           , ("M-v", spawn "vlc")
           , ("M-<Backspace>", spawn "mpc toggle")
           , ("<XF86AudioNext>", spawn "mpc next")
@@ -213,6 +216,7 @@ scratchpads = [ NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (cent
               , NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
+
 
 
 -- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
