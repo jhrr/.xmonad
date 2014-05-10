@@ -33,9 +33,11 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
-myXmonadBar = "dzen2 -p -ta l -w 680"
-myStatusBar = "conky -c ~/.conkyrc | dzen2 -p -ta r -w 750 -x 540"
-dzenColours = "-fg '#a8a3f7' -bg '#3f3c6d'"
+myXmonadBar = "dzen2 -p -ta l -w 620 -fn " ++ dzenFont ++ dzenColours
+myStatusBar = "conky -c ~/.conkyrc | dzen2 -p -ta r -w 750 -x 540 -fn " ++ dzenFont ++ dzenColours
+dzenColours = "-fg '#ffffff' -bg '#000000'"
+--dzenFont = "'inconsolata:size=10' "
+dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
 
 myConfig dzenL =
   myUrgencyHook $ defaultConfig
@@ -58,11 +60,10 @@ myLogHook :: Handle -> X ()
 myLogHook h =
   dynamicLogWithPP $ dzenPP
           { ppOutput = hPutStrLn h
-          , ppTitle = shorten 100
+          , ppTitle = dzenColor "#ffff00" "" . pad. shorten 100
           , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
           , ppHiddenNoWindows = dzenColor "#606060" "" . pad . noScratchPad
-          -- , ppWsSep = ""
-          -- , ppSep = "  "
+          , ppWsSep = ""
           -- , ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
         }
         where
