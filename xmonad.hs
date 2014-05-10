@@ -25,24 +25,23 @@ import qualified Data.Map as M
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
 
--- "dzen2 -p -xs 1 -ta l -e 'onstart=lower'"
--- spawn $ "conky -c ~/.xmonad/data/conky/dzen | " ++ "dzen2 -p -xs 2 ta -r -e 'onstart=lower'"
-
 
 main :: IO ()
 main = do
-    h <- spawnPipe "dzen2 -p -xs 1 -ta l -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
-    spawn $ "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
+    dzenL <- spawnPipe myXmonadBar
+    dzenR <- spawnPipe myStatusBar
     -- host <- getHost
-    xmonad $ myConfig
+    xmonad $ myConfig dzenL
 
+myXmonadBar = "dzen2 -p -xs 1 -ta l -fg -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
+myStatusBar = "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
 dzenColours = "-fg '#a8a3f7' -bg '#3f3c6d' "
 
-myConfig =
+myConfig dzenL =
   myUrgencyHook $ defaultConfig
         { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
         , layoutHook = avoidStruts $ layoutHook defaultConfig
-        -- , logHook = myLogHook h
+        , logHook = myLogHook dzenL
         , terminal = myTerminal
         , modMask = myModMask
 
@@ -81,7 +80,7 @@ myUrgencyHook = withUrgencyHook dzenUrgencyHook
 --   hostName <- nodeName `fmap` getSystemID
 --   return $ case hostName of
 --     "paradise" -> Thinkpad True
---     "" -> Macbook True
+--     "" -> Desktop True
 --     _ -> Other
 
 myTerminal :: String
@@ -102,7 +101,6 @@ myFocusFollowsMouse = True
 -- ircAction :: Host -> X ()
 -- ircAction host = case host of
 --   Laptop -> runInTerm "" "ssh <your screen server>"
---   Powerbook -> runInTerm "" "ssh <your screen server>"
 --   Desktop -> runInTerm "" "tmux attach -t irc"
 
 myManageHook :: ManageHook
