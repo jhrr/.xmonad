@@ -25,16 +25,25 @@ import qualified Data.Map as M
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
 
+-- "dzen2 -p -xs 1 -ta l -e 'onstart=lower'"
+-- spawn $ "conky -c ~/.xmonad/data/conky/dzen | " ++ "dzen2 -p -xs 2 ta -r -e 'onstart=lower'"
+
+
 
 main :: IO ()
-main
-  = do
-    xmproc <- spawnPipe "xmobar"
+main = do
+    h <- spawnPipe "dzen2 -ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
+    spawn $ "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
     -- host <- getHost
-    xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig
+    xmonad $ myConfig
+
+dzenColours = "-fg '#a8a3f7' -bg '#3f3c6d' "
+
+myConfig =
+  myUrgencyHook $ defaultConfig
         { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
         , layoutHook = avoidStruts $ layoutHook defaultConfig
-        , logHook = myLogHook xmproc
+        -- , logHook = myLogHook h
         , terminal = myTerminal
         , modMask = myModMask
 
@@ -47,8 +56,22 @@ main
         , XMonad.workspaces = myWorkspaces
         } `additionalKeysP` myKeys
 
--- myUrgencyHook = withUrgencyHook dzenUrgencyHook
---     { args = ["-bg", "yellow", "-fg", "black"] }
+myLogHook :: Handle -> X ()
+myLogHook h =
+  dynamicLogWithPP $ dzenPP
+          { ppOutput = hPutStrLn h
+          , ppTitle = shorten 100
+          , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
+          , ppHiddenNoWindows = dzenColor "#606060" "" . pad . noScratchPad
+          -- , ppWsSep = ""
+          -- , ppSep = "  "
+          -- , ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
+        }
+        where
+          noScratchPad ws = if ws == "NSP" then "" else ws
+
+myUrgencyHook = withUrgencyHook dzenUrgencyHook
+    { args = ["-bg", "yellow", "-fg", "black"] }
 
 -- Bool informs us if the machine has a Windows key
 -- data Host = Laptop Bool | Desktop Bool | Other
@@ -108,6 +131,12 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("<XF86AudioPrev>", spawn "mpc prev")
           , ("C-M-r", spawn "mpc random")  -- toggle random play mode
           -- , ("M-<F1>", spawn "mpc pause; xscreensaver-command -lock")
+
+          -- , ("M-S-s", spawn $
+          --         case host of
+          --           Laptop _ -> "pm-suspend"
+          --           _ -> "systemctl suspend")
+
           , ("M-<Print>", spawn "scrot")
           , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
             -- scratchpads
@@ -189,20 +218,6 @@ myXPConfig = defaultXPConfig
     { fgColor = "#000000"
     , bgColor = "#ff6565"
     }
-
-
-myLogHook :: Handle -> X ()
-myLogHook xmproc =
-    dynamicLogWithPP $ xmobarPP
-        { ppOutput = hPutStrLn xmproc
-        , ppTitle = xmobarColor "green" "" . shorten 100
-        , ppHidden = xmobarColor "white" "" . noScratchPad
-        , ppHiddenNoWindows = xmobarColor "gray" "" . noScratchPad
-        , ppUrgent = xmobarColor "yellow" "red" . xmobarStrip
-        }
-        where
-          noScratchPad ws = if ws == "NSP" then "" else ws
-
 
 spBeckon :: String -> X ()
 spBeckon = namedScratchpadAction scratchpads
