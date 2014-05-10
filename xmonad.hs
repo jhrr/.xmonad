@@ -33,9 +33,9 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
-myXmonadBar = "dzen2 -p -xs 1 -ta l -fg -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
-myStatusBar = "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
-dzenColours = "-fg '#a8a3f7' -bg '#3f3c6d' "
+myXmonadBar = "dzen2 -p -xs 1 -ta l -e 'onstart=lower'"
+myStatusBar = "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -e 'onstart=lower'"
+dzenColours = "-fg '#a8a3f7' -bg '#3f3c6d'"
 
 myConfig dzenL =
   myUrgencyHook $ defaultConfig
