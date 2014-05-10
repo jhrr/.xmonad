@@ -29,10 +29,9 @@ import qualified Data.Map as M
 -- spawn $ "conky -c ~/.xmonad/data/conky/dzen | " ++ "dzen2 -p -xs 2 ta -r -e 'onstart=lower'"
 
 
-
 main :: IO ()
 main = do
-    h <- spawnPipe "dzen2 -ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
+    h <- spawnPipe "dzen2 -p -xs 1 -ta l -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
     spawn $ "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -fg '#a8a3f7' -bg '#3f3c6d' -e 'onstart=lower'"
     -- host <- getHost
     xmonad $ myConfig
