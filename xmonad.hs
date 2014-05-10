@@ -98,6 +98,7 @@ myManageHook = composeAll . concat $
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
+          , ("M-S-u", clearUrgents)
             -- spawning
           , ("M-g", spawn "firefox")
           , ("M-c", spawn "chromium")
