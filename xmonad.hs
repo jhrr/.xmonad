@@ -24,7 +24,7 @@ import qualified Data.Map as M
 -- topic layer -- abstractions over common work patterns
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
-
+-- for dzen xinerama, one bar on each, we would need -xs 1 and -xs 2 in each
 
 main :: IO ()
 main = do
@@ -33,8 +33,8 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
-myXmonadBar = "dzen2 -p -xs 1 -ta l -e 'onstart=lower'"
-myStatusBar = "conky -c ~/.conkyrc | " ++ "dzen2 -p -xs 2 ta -r -e 'onstart=lower'"
+myXmonadBar = "dzen2 -p -ta l -w 680"
+myStatusBar = "conky -c ~/.conkyrc | dzen2 -p -ta r -w 750 -x 540"
 dzenColours = "-fg '#a8a3f7' -bg '#3f3c6d'"
 
 myConfig dzenL =
