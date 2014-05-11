@@ -52,16 +52,13 @@ dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
 
 myConfig dzenL =
   myUrgencyHook $ defaultConfig
-        { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
+        { manageHook = manageDocks
+                       <+> myManageHook
+                       <+> namedScratchpadManageHook scratchpads
         , layoutHook = avoidStruts $ layoutHook defaultConfig
         , logHook = myLogHook dzenL
         , terminal = myTerminal
         , modMask = myModMask
-
-        -- , modMask = if host == Laptop False
-        --             then myModMask
-        --             else mod4Mask
-
         , borderWidth = myBorderWidth
         , focusFollowsMouse = myFocusFollowsMouse
         , XMonad.workspaces = myWorkspaces
@@ -72,7 +69,7 @@ myLogHook h =
   dynamicLogWithPP $ dzenPP
           { ppOutput = hPutStrLn h
           , ppCurrent = dzenColor "#ffff00" "" . wrap "[" "]" . noScratchPad
-          , ppTitle = dzenColor "#ffff00" "" . pad. shorten 40
+          , ppTitle = dzenColor "green" "" . pad. shorten 40
           , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
           , ppHiddenNoWindows = const ""
           , ppSep = " "
@@ -136,8 +133,8 @@ myKeys =  [ ("M-u", focusUrgent)
 
           -- , ("M-S-s", spawn $
           --         case host of
-          --           Laptop _ -> "pm-suspend"
-          --           _ -> "systemctl suspend")
+          --           Thinkpad _ -> "systemctl suspend"
+          --           _ -> "")
 
           , ("M-<Print>", spawn "scrot")
           , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
