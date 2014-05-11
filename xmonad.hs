@@ -33,11 +33,12 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
-myXmonadBar = "dzen2 -p -ta l -w 620 -fn " ++ dzenFont ++ dzenColours
-myStatusBar = "conky -c ~/.conkyrc | dzen2 -p -ta r -w 750 -x 540 -fn " ++ dzenFont ++ dzenColours
+myXmonadBar = "dzen2 -p -ta l -w 400 -fn " ++ dzenFont ++ dzenColours
+myStatusBar = "conky -c ~/.conkyrc | dzen2 -p -ta r -w 820 -x 460 -fn " ++ dzenFont ++ dzenColours
 dzenColours = "-fg '#ffffff' -bg '#000000'"
---dzenFont = "'inconsolata:size=10' "
+--dzenFont = "'inconsolata-hellenic:size=8' "
 dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
+
 
 myConfig dzenL =
   myUrgencyHook $ defaultConfig
@@ -60,7 +61,7 @@ myLogHook :: Handle -> X ()
 myLogHook h =
   dynamicLogWithPP $ dzenPP
           { ppOutput = hPutStrLn h
-          , ppTitle = dzenColor "#ffff00" "" . pad. shorten 100
+          , ppTitle = dzenColor "#ffff00" "" . pad. shorten 40
           , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
           , ppHiddenNoWindows = dzenColor "#606060" "" . pad . noScratchPad
           , ppWsSep = ""
@@ -95,6 +96,7 @@ myModMask = mod4Mask
 
 myWorkspaces :: [String]
 myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
+
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
