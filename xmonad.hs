@@ -36,42 +36,7 @@ main = do
 myXmonadBar = "dzen2 -p -ta l -w 400 -fn " ++ dzenFont ++ dzenColours
 myStatusBar = "conky -c ~/.conkyrc | dzen2 -p -ta r -w 820 -x 460 -fn " ++ dzenFont ++ dzenColours
 dzenColours = "-fg '#ffffff' -bg '#000000'"
---dzenFont = "'inconsolata-hellenic:size=8' "
 dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
-
-
-myConfig dzenL =
-  myUrgencyHook $ defaultConfig
-        { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
-        , layoutHook = avoidStruts $ layoutHook defaultConfig
-        , logHook = myLogHook dzenL
-        , terminal = myTerminal
-        , modMask = myModMask
-
-        -- , modMask = if host == Laptop False
-        --             then modMask def
-        --             else mod4Mask
-
-        , borderWidth = myBorderWidth
-        , focusFollowsMouse = myFocusFollowsMouse
-        , XMonad.workspaces = myWorkspaces
-        } `additionalKeysP` myKeys
-
-myLogHook :: Handle -> X ()
-myLogHook h =
-  dynamicLogWithPP $ dzenPP
-          { ppOutput = hPutStrLn h
-          , ppTitle = dzenColor "#ffff00" "" . pad. shorten 40
-          , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
-          , ppHiddenNoWindows = dzenColor "#606060" "" . pad . noScratchPad
-          , ppWsSep = ""
-          -- , ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
-        }
-        where
-          noScratchPad ws = if ws == "NSP" then "" else ws
-
-myUrgencyHook = withUrgencyHook dzenUrgencyHook
-    { args = ["-bg", "yellow", "-fg", "black"] }
 
 -- Bool informs us if the machine has a Windows key
 -- data Host = Laptop Bool | Desktop Bool | Other
@@ -85,6 +50,41 @@ myUrgencyHook = withUrgencyHook dzenUrgencyHook
 --     "" -> Desktop True
 --     _ -> Other
 
+myConfig dzenL =
+  myUrgencyHook $ defaultConfig
+        { manageHook = manageDocks <+> myManageHook <+> namedScratchpadManageHook scratchpads
+        , layoutHook = avoidStruts $ layoutHook defaultConfig
+        , logHook = myLogHook dzenL
+        , terminal = myTerminal
+        , modMask = myModMask
+
+        -- , modMask = if host == Laptop False
+        --             then myModMask
+        --             else mod4Mask
+
+        , borderWidth = myBorderWidth
+        , focusFollowsMouse = myFocusFollowsMouse
+        , XMonad.workspaces = myWorkspaces
+        } `additionalKeysP` myKeys
+
+myLogHook :: Handle -> X ()
+myLogHook h =
+  dynamicLogWithPP $ dzenPP
+          { ppOutput = hPutStrLn h
+          , ppCurrent = dzenColor "#ffff00" "" . wrap "[" "]" . noScratchPad
+          , ppTitle = dzenColor "#ffff00" "" . pad. shorten 40
+          , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
+          , ppHiddenNoWindows = const ""
+          , ppSep = " "
+          , ppWsSep = ""
+          -- , ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
+        }
+        where
+          noScratchPad ws = if ws == "NSP" then "" else ws
+
+myUrgencyHook = withUrgencyHook dzenUrgencyHook
+    { args = ["-bg", "yellow", "-fg", "black"] }
+
 myTerminal :: String
 myTerminal = "urxvt"
 
@@ -95,7 +95,8 @@ myModMask :: KeyMask
 myModMask = mod4Mask
 
 myWorkspaces :: [String]
-myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
+--myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
+myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 
 
 myFocusFollowsMouse :: Bool
@@ -108,13 +109,14 @@ myFocusFollowsMouse = True
 
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
-   [ [ className =? "Emacs" --> doShift "β" ]
-   , [ className =? "Chromium" --> doShift "γ" ]
-   , [ className =? "Firefox" --> doShift "γ" ]
-   , [ className =? "Zathura" --> doShift "δ" ]
-   , [ className =? "Vlc" --> doShift "θ" ]
-   , [ className =? "Skype" --> doShift "ι" ]
-   , [ className =? "Transmission-gtk" --> doShift "ι" ]
+   [ [ className =? "Emacs" --> doShift "2" ]
+   , [ className =? "Chromium" --> doShift "3" ]
+   , [ className =? "Firefox" --> doShift "3" ]
+   , [ className =? "Zathura" --> doShift "4" ]
+   , [ className =? "Vlc" --> doShift "5" ]
+   , [ className =? "Skype" --> doShift "8" ]
+   , [ className =? "Transmission-gtk" --> doShift "9" ]
+   , [ className =? "Soulseekqt" --> doShift "9" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
