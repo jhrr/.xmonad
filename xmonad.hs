@@ -10,8 +10,8 @@ import XMonad.ManageHook()
 import XMonad.Prompt
 import XMonad.Prompt.Input
 import XMonad.Prompt.Ssh
-import XMonad.Util.NamedScratchpad
 import XMonad.Util.EZConfig (additionalKeysP)
+import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 
 import System.IO
@@ -36,9 +36,9 @@ main = do
 myXmonadBar = "dzen2 -p -ta l -w 400 -fn " ++ dzenFont ++ dzenColours
 myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -fn " ++ dzenFont ++ dzenColours
 dzenColours = "-fg '#ffffff' -bg '#000000'"
+dzenFont = "'inconsolata:size=8' "
 --dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
-dzenFont = "'-Misc-Fixed-Medium-R-Normal--10-100-75-75-C-60-ISO10646-1' "
-xineRama = "-xs 1 -xs2"
+--dzenFont = "'-Misc-Fixed-Medium-R-Normal--10-100-75-75-C-60-ISO10646-1' "
 
 -- Bool informs us if the machine has a Windows key
 -- data Host = Laptop Bool | Desktop Bool | Other
@@ -70,10 +70,11 @@ myLogHook :: Handle -> X ()
 myLogHook h =
   dynamicLogWithPP $ dzenPP
           { ppOutput = hPutStrLn h
-          , ppCurrent = dzenColor "#bc6c4c" "" . wrap "[" "]" . noScratchPad
-          , ppTitle = dzenColor "#7cac7c" "" . pad. shorten 40
-          , ppHidden = dzenColor "#909090" "" . pad . noScratchPad
+          , ppCurrent = dzenColor "#f8f893" "" . wrap "[" "]" . noScratchPad
+          , ppTitle = dzenColor "green" "" . pad. shorten 40
+          , ppHidden = dzenColor "#4f4f4f" "" . pad . noScratchPad
           , ppHiddenNoWindows = const ""
+          , ppVisible = dzenColor "#f18c96" "" . wrap "[" "]" . noScratchPad
           , ppSep = " "
           , ppWsSep = ""
           -- , ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
