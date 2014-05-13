@@ -33,12 +33,21 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
-myXmonadBar = "dzen2 -p -ta l -w 400 -fn " ++ dzenFont ++ dzenColours
-myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -fn " ++ dzenFont ++ dzenColours
+myXmonadBar = "dzen2 -p -ta l -w 400 -xs 1 -fn " ++ dzenFont ++ dzenColours
+myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn " ++ dzenFont ++ dzenColours
 dzenColours = "-fg '#ffffff' -bg '#000000'"
 dzenFont = "'inconsolata:size=8' "
 --dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
---dzenFont = "'-Misc-Fixed-Medium-R-Normal--10-100-75-75-C-60-ISO10646-1' "
+
+-- screenWidth :: ScreenNum -> IO Double
+-- screenWidth s = do
+--     dsp <- openDisplay ""
+--     mss <- xineramaQueryScreens dsp
+--     return $ case mss of
+--         Nothing -> 0
+--         Just [] -> 0
+--         Just ss -> if s >= 0 && s < length ss -- prevent bad index
+--             then fromIntegral . xsi_width $ ss !! s else 0
 
 -- Bool informs us if the machine has a Windows key
 -- data Host = Laptop Bool | Desktop Bool | Other
@@ -116,7 +125,7 @@ myManageHook = composeAll . concat $
    , [ className =? "Vlc" --> doShift "5" ]
    , [ className =? "Skype" --> doShift "8" ]
    , [ className =? "Transmission-gtk" --> doShift "9" ]
-   , [ className =? "Soulseekqt" --> doShift "9" ]
+   , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
