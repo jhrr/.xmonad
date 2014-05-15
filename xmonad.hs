@@ -35,9 +35,8 @@ main = do
 
 myXmonadBar = "dzen2 -p -ta l -w 400 -xs 1 -fn " ++ dzenFont ++ dzenColours
 myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn " ++ dzenFont ++ dzenColours
-dzenColours = "-fg '#ffffff' -bg '#000000'"
 dzenFont = "'inconsolata:size=8' "
---dzenFont = "'-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*' "
+dzenColours = "-fg '#ffffff' -bg '#000000'"
 
 -- screenWidth :: ScreenNum -> IO Double
 -- screenWidth s = do
