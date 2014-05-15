@@ -82,6 +82,7 @@ myLogHook h =
           , ppTitle = dzenColor "green" "" . pad. shorten 40
           , ppHidden = dzenColor "#5b605e" "" . pad . noScratchPad
           , ppHiddenNoWindows = const ""
+          , ppLayout = dzenColor "#dcdccc" "#000000"
           , ppVisible = dzenColor "#f18c96" "" . wrap "[" "]" . noScratchPad
           , ppSep = " "
           , ppWsSep = ""
