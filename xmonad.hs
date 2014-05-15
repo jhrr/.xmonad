@@ -24,7 +24,7 @@ import qualified Data.Map as M
 -- topic layer -- abstractions over common work patterns
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
--- for dzen xinerama, one bar on each, we would need -xs 1 and -xs 2 in each
+
 
 main :: IO ()
 main = do
@@ -81,7 +81,7 @@ myLogHook h =
           { ppOutput = hPutStrLn h
           , ppCurrent = dzenColor "#f8f893" "" . wrap "[" "]" . noScratchPad
           , ppTitle = dzenColor "green" "" . pad. shorten 40
-          , ppHidden = dzenColor "#4f4f4f" "" . pad . noScratchPad
+          , ppHidden = dzenColor "#5b605e" "" . pad . noScratchPad
           , ppHiddenNoWindows = const ""
           , ppVisible = dzenColor "#f18c96" "" . wrap "[" "]" . noScratchPad
           , ppSep = " "
@@ -105,8 +105,7 @@ myModMask = mod4Mask
 
 myWorkspaces :: [String]
 --myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
-myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
-
+myWorkspaces = map show [1 .. 9 :: Int]
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
@@ -128,7 +127,6 @@ myManageHook = composeAll . concat $
    , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
-
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
@@ -173,7 +171,6 @@ myKeys =  [ ("M-u", focusUrgent)
           , (otherModMasks, action) <- [ ("", windows . W.greedyView) -- was W.greedyView
                                        , ("S-", windows . W.shift)] ]
 
-
           -- mod-[1..],       Switch to workspace N
           -- mod-shift-[1..], Move client to workspace N
           -- mod-ctrl-[1..],  Switch to workspace N on other screen
@@ -184,8 +181,6 @@ myKeys =  [ ("M-u", focusUrgent)
           --                 , (goto', "")
           --                 , (\ws -> nextScreen >> (goto' $ ws), "C-")
           --                 ]]
-
-
 
 mySearchMap :: (SearchEngine -> a) -> M.Map (KeyMask, KeySym) a
 mySearchMap method = M.fromList
@@ -208,7 +203,6 @@ mySearchMap method = M.fromList
                        images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
                        pb = searchEngine "pb" "http://bayproxy.me/search/"
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
-
 
 -- Prompt search: get input from the user via a prompt, then run the
 --   search in firefox and automatically switch to the web workspace
