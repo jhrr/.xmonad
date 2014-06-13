@@ -70,11 +70,10 @@ dzenColours = "-fg '#ffffff' -bg '#000000'"
 --     _ -> Other
 
 myConfig dzenL =
-  myUrgencyHook $ defaultConfig
+  withUrgencyHook NoUrgencyHook $ defaultConfig
         { manageHook = manageDocks
                        <+> myManageHook
                        <+> namedScratchpadManageHook scratchpads
-        --, layoutHook = avoidStruts $ layoutHook defaultConfig
         , layoutHook = myLayoutHook
         , logHook = myLogHook dzenL
         , terminal = myTerminal
@@ -95,15 +94,15 @@ myLogHook h =
           , ppLayout = dzenColor "#dcdccc" "#000000" . wrap " " ""
           , ppVisible = dzenColor "#f18c96" "" . wrap "[" "]" . noScratchPad
           , ppUrgent = dzenColor "black" "yellow" . pad
+          --, ppUrgent = dzenColor "yellow" "red" . pad . dzenStrip
           , ppSep = " "
           , ppWsSep = ""
-          --, ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
         }
         where
           noScratchPad ws = if ws == "NSP" then "" else ws
 
-myUrgencyHook = withUrgencyHook dzenUrgencyHook
-    { args = ["-bg", "yellow", "-fg", "black"] }
+-- myUrgencyHook = withUrgencyHook dzenUrgencyHook
+--     { args = ["-bg", "yellow", "-fg", "black" "-xs", "1"] }
 
 myTerminal :: String
 myTerminal = "urxvt"
@@ -164,6 +163,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-g", spawn "firefox")
           , ("M-c", spawn "chromium")
           , ("M-i", spawn "pidgin")
+          , ("M-m", spawn "soulseekqt")
           , ("M-s", spawn "skype")
           , ("M-v", spawn "vlc")
           , ("M-<Backspace>", spawn "mpc toggle")
@@ -268,7 +268,6 @@ scratchpads = [ NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (cent
               , NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
-
 
 
 -- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
