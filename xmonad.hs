@@ -152,7 +152,10 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout $ standardLayouts
                withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
       where
         pidginRoster = (ClassName "Pidgin") `And` (Role "buddy_list")
-        skypeRoster = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
+        skypeRoster = (ClassName "Skype")
+                      `And` (Not (Title "Options"))
+                      `And` (Not (Role "Chats"))
+                      `And` (Not (Role "CallWindowForm"))
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
