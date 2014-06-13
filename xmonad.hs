@@ -145,7 +145,11 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout $ standardLayouts
     standardLayouts = tall ||| Mirror tall ||| Full
     tiled = smartBorders (ResizableTall 1 (2/100) (1/2) [])
     reflectTiled = (reflectHoriz tiled)
-    imLayout = avoidStruts $ smartBorders $ withIM (1%9) pidginRoster $ reflectHoriz $ withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
+    imLayout = avoidStruts $
+               smartBorders $
+               withIM (1%9) pidginRoster $
+               reflectHoriz $
+               withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
       where
         pidginRoster = (ClassName "Pidgin") `And` (Role "buddy_list")
         skypeRoster = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
