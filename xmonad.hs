@@ -6,6 +6,13 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat, doRectFloat)
 import XMonad.Hooks.UrgencyHook
+import XMonad.Layout.Grid
+import XMonad.Layout.IM
+import XMonad.Layout.NoBorders
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Reflect (reflectHoriz)
+import XMonad.Layout.ResizableTile
+import XMonad.Layout.StackTile
 import XMonad.ManageHook()
 import XMonad.Prompt
 import XMonad.Prompt.Input
@@ -13,6 +20,8 @@ import XMonad.Prompt.Ssh
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
+
+import Data.Ratio ((%))
 
 import System.IO
 import System.Posix.Unistd()
@@ -65,7 +74,8 @@ myConfig dzenL =
         { manageHook = manageDocks
                        <+> myManageHook
                        <+> namedScratchpadManageHook scratchpads
-        , layoutHook = avoidStruts $ layoutHook defaultConfig
+        --, layoutHook = avoidStruts $ layoutHook defaultConfig
+        , layoutHook = myLayoutHook
         , logHook = myLogHook dzenL
         , terminal = myTerminal
         , modMask = myModMask
@@ -82,11 +92,12 @@ myLogHook h =
           , ppTitle = dzenColor "green" "" . pad. shorten 40
           , ppHidden = dzenColor "#5b605e" "" . pad . noScratchPad
           , ppHiddenNoWindows = const ""
-          , ppLayout = dzenColor "#dcdccc" "#000000"
+          , ppLayout = dzenColor "#dcdccc" "#000000" . wrap " " ""
           , ppVisible = dzenColor "#f18c96" "" . wrap "[" "]" . noScratchPad
+          , ppUrgent = dzenColor "black" "yellow" . pad
           , ppSep = " "
           , ppWsSep = ""
-          -- , ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
+          --, ppUrgent = dzenColor "yellow" "red" . pad .dzenStrip
         }
         where
           noScratchPad ws = if ws == "NSP" then "" else ws
@@ -122,11 +133,28 @@ myManageHook = composeAll . concat $
    , [ className =? "Firefox" --> doShift "3" ]
    , [ className =? "Zathura" --> doShift "4" ]
    , [ className =? "Vlc" --> doShift "5" ]
-   , [ className =? "Skype" --> doShift "8" ]
-   , [ className =? "Transmission-gtk" --> doShift "9" ]
+   , [ className =? "Skype" --> doShift "9" ]
    , [ className =? "Soulseekqt" --> doShift "7" ]
+   , [ className =? "Transmission-gtk" --> doShift "7" ]
+   , [ className =? "Pidgin" --> doShift "9" ]
+   --, [ classNotRole ("pidgin", "Buddy List") --> doFloat ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
+   -- where
+   --   classNotRole :: (String, String) -> XMonad.Core.Query Bool
+   --   classNotRole (c,r) = className =? c <&&> role /=? r
+   --   role = stringProperty "WM_WINDOW_ROLE"
+
+myLayoutHook = avoidStruts $ onWorkspace "9" imLayout $ standardLayouts
+  where
+    tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
+    standardLayouts = tall ||| Mirror tall ||| Full
+    tiled = smartBorders (ResizableTall 1 (2/100) (1/2) [])
+    reflectTiled = (reflectHoriz tiled)
+    imLayout = avoidStruts $ smartBorders $ withIM (1%9) pidginRoster $ reflectHoriz $ withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
+      where
+        pidginRoster = And (ClassName "Pidgin") (Role "buddy_list")
+        skypeRoster = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
@@ -134,6 +162,8 @@ myKeys =  [ ("M-u", focusUrgent)
             -- spawning
           , ("M-g", spawn "firefox")
           , ("M-c", spawn "chromium")
+          , ("M-i", spawn "pidgin")
+          , ("M-s", spawn "skype")
           , ("M-v", spawn "vlc")
           , ("M-<Backspace>", spawn "mpc toggle")
           , ("<XF86AudioNext>", spawn "mpc next")
