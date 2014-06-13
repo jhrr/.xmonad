@@ -133,17 +133,12 @@ myManageHook = composeAll . concat $
    , [ className =? "Firefox" --> doShift "3" ]
    , [ className =? "Zathura" --> doShift "4" ]
    , [ className =? "Vlc" --> doShift "5" ]
-   , [ className =? "Skype" --> doShift "9" ]
    , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ className =? "Transmission-gtk" --> doShift "7" ]
    , [ className =? "Pidgin" --> doShift "9" ]
-   --, [ classNotRole ("pidgin", "Buddy List") --> doFloat ]
+   , [ className =? "Skype" --> doShift "9" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
-   -- where
-   --   classNotRole :: (String, String) -> XMonad.Core.Query Bool
-   --   classNotRole (c,r) = className =? c <&&> role /=? r
-   --   role = stringProperty "WM_WINDOW_ROLE"
 
 myLayoutHook = avoidStruts $ onWorkspace "9" imLayout $ standardLayouts
   where
@@ -153,7 +148,7 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout $ standardLayouts
     reflectTiled = (reflectHoriz tiled)
     imLayout = avoidStruts $ smartBorders $ withIM (1%9) pidginRoster $ reflectHoriz $ withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
       where
-        pidginRoster = And (ClassName "Pidgin") (Role "buddy_list")
+        pidginRoster = (ClassName "Pidgin") `And` (Role "buddy_list")
         skypeRoster = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
 
 myKeys :: [ (String, X()) ]
