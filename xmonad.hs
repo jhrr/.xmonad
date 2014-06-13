@@ -115,7 +115,6 @@ myModMask :: KeyMask
 myModMask = mod4Mask
 
 myWorkspaces :: [String]
---myWorkspaces = ["α", "β" ,"γ", "δ", "ε", "ζ", "η", "θ", "ι"]
 myWorkspaces = map show [1 .. 9 :: Int]
 
 myFocusFollowsMouse :: Bool
