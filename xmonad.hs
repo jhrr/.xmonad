@@ -129,6 +129,7 @@ myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "2" ]
    , [ className =? "Chromium" --> doShift "3" ]
    , [ className =? "Firefox" --> doShift "3" ]
+   , [ className =? "Evince" --> doShift "4" ]
    , [ className =? "Zathura" --> doShift "4" ]
    , [ className =? "Vlc" --> doShift "5" ]
    , [ className =? "Soulseekqt" --> doShift "7" ]
@@ -164,6 +165,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-c", spawn "chromium")
           , ("M-i", spawn "pidgin")
           , ("M-m", spawn "soulseekqt")
+          , ("M-r", spawn "evince")
           , ("M-s", spawn "skype")
           , ("M-v", spawn "vlc")
           , ("M-<Backspace>", spawn "mpc toggle")
