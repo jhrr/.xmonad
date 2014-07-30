@@ -127,11 +127,11 @@ myFocusFollowsMouse = True
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "2" ]
-   , [ className =? "Chromium" --> doShift "3" ]
    , [ className =? "Firefox" --> doShift "3" ]
-   , [ className =? "Evince" --> doShift "4" ]
-   , [ className =? "Zathura" --> doShift "4" ]
-   , [ className =? "Vlc" --> doShift "5" ]
+   , [ className =? "Chromium" --> doShift "4" ]
+   , [ className =? "Evince" --> doShift "5" ]
+   , [ className =? "Zathura" --> doShift "5" ]
+   , [ className =? "Vlc" --> doShift "6" ]
    , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ className =? "Transmission-gtk" --> doShift "7" ]
    , [ className =? "Pidgin" --> doShift "9" ]
