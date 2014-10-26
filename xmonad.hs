@@ -42,16 +42,16 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
-myXmonadBar :: [Char]
+myXmonadBar :: String
 myXmonadBar = "dzen2 -p -ta l -w 400 -xs 1 -fn " ++ dzenFont ++ dzenColours
 
-myStatusBar :: [Char]
+myStatusBar :: String
 myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn " ++ dzenFont ++ dzenColours
 
-dzenFont:: [Char]
+dzenFont:: String
 dzenFont = "'inconsolata:size=8' "
 
-dzenColours :: [Char]
+dzenColours :: String
 dzenColours = "-fg '#ffffff' -bg '#000000'"
 
 -- screenWidth :: ScreenNum -> IO Double
@@ -146,7 +146,7 @@ myManageHook = composeAll . concat $
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
-myLayoutHook = avoidStruts $ onWorkspace "9" imLayout $ standardLayouts
+myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
   where
     tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
     standardLayouts = tall ||| Mirror tall ||| Full
