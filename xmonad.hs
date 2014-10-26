@@ -6,8 +6,11 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat, doRectFloat)
 import XMonad.Hooks.UrgencyHook
+import XMonad.Layout.FixedColumn
 import XMonad.Layout.Grid
 import XMonad.Layout.IM
+import XMonad.Layout.LimitWindows
+import XMonad.Layout.Magnifier
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect (reflectHoriz)
@@ -33,7 +36,7 @@ import qualified Data.Map as M
 -- topic layer -- abstractions over common work patterns
 -- application layer -- control over individual programs
 -- shortcuts/bindings vs. prompts
-
+-- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
 
 main :: IO ()
 main = do
@@ -151,18 +154,32 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
     tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
     standardLayouts = tall ||| Mirror tall ||| Full
     tiled = smartBorders (ResizableTall 1 (2/100) (1/2) [])
-    reflectTiled = (reflectHoriz tiled)
+    reflectTiled = reflectHoriz tiled
     imLayout = avoidStruts $
                smartBorders $
                withIM (1%9) pidginRoster $
                reflectHoriz $
                withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
       where
-        pidginRoster = (ClassName "Pidgin") `And` (Role "buddy_list")
-        skypeRoster = (ClassName "Skype")
-                      `And` (Not (Title "Options"))
-                      `And` (Not (Role "Chats"))
-                      `And` (Not (Role "CallWindowForm"))
+        pidginRoster = ClassName "Pidgin" `And` Role "buddy_list"
+        skypeRoster = ClassName "Skype"
+                      `And` Not (Title "Options")
+                      `And` Not (Role "Chats")
+                      `And` Not (Role "CallWindowForm")
+
+-- Layout for webdev with browser and horizontal terminal -- TODO: topicspace
+-- myWide = Mirror $ Tall nmaster delta ratio
+--     where
+--         -- The default number of windows in the master pane
+--         nmaster = 1
+--         -- Percent of screen to increment by when resizing panes
+--         delta   = 3/100
+--         -- Default proportion of screen occupied by master pane
+--         ratio   = 80/100
+
+-- Layout for coding with editor at 80 and two terminals that pop-out
+-- when focussed -- TODO: topicspace
+myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
@@ -278,6 +295,3 @@ scratchpads = [ NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (cent
               , NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
-
-
--- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
