@@ -42,9 +42,16 @@ main = do
     -- host <- getHost
     xmonad $ myConfig dzenL
 
+myXmonadBar :: [Char]
 myXmonadBar = "dzen2 -p -ta l -w 400 -xs 1 -fn " ++ dzenFont ++ dzenColours
+
+myStatusBar :: [Char]
 myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn " ++ dzenFont ++ dzenColours
+
+dzenFont:: [Char]
 dzenFont = "'inconsolata:size=8' "
+
+dzenColours :: [Char]
 dzenColours = "-fg '#ffffff' -bg '#000000'"
 
 -- screenWidth :: ScreenNum -> IO Double
@@ -219,10 +226,10 @@ myKeys =  [ ("M-u", focusUrgent)
 mySearchMap :: (SearchEngine -> a) -> M.Map (KeyMask, KeySym) a
 mySearchMap method = M.fromList
                      [ ((0, xK_g), method google)
-                     , ((0, xK_w), method wikipedia)
-                     , ((0, xK_h), method hoogle)
                      , ((shiftMask, xK_h), method hackage)
+                     , ((0, xK_h), method hoogle)
                      , ((0, xK_m), method maps)
+                     , ((0, xK_w), method wikipedia)
                      , ((0, xK_y), method youtube)
                        -- custom searches
                      , ((0, xK_d), method discogs)
