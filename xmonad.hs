@@ -259,7 +259,7 @@ mySearchMap method = M.fromList
                        discogs = searchEngine "discogs" "http://www.discogs.com/search/?q="
                        github = searchEngine "github" "https://github.com/search?q="
                        images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
-                       pb = searchEngine "pb" "https://pirateproxy.sx/"
+                       pb = searchEngine "pb" "http://tpb.unblock.re/search.php?q="
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
 -- Prompt search: get input from the user via a prompt, then run the
