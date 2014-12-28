@@ -137,8 +137,8 @@ myFocusFollowsMouse = True
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "2" ]
-   , [ className =? "Firefox" --> doShift "3" ]
-   , [ className =? "Chromium" --> doShift "4" ]
+   , [ className =? "Chromium" --> doShift "3" ]
+   , [ className =? "Firefox" --> doShift "4" ]
    , [ className =? "Evince" --> doShift "5" ]
    , [ className =? "Zathura" --> doShift "5" ]
    , [ className =? "Vlc" --> doShift "6" ]
@@ -179,7 +179,7 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
 
 -- Layout for coding with editor at 80 and two terminals that pop-out
 -- when focussed -- TODO: topicspace
-myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
+-- myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
@@ -259,7 +259,7 @@ mySearchMap method = M.fromList
                        discogs = searchEngine "discogs" "http://www.discogs.com/search/?q="
                        github = searchEngine "github" "https://github.com/search?q="
                        images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
-                       pb = searchEngine "pb" "http://bayproxy.me/search/"
+                       pb = searchEngine "pb" "https://pirateproxy.sx/"
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
 -- Prompt search: get input from the user via a prompt, then run the
@@ -277,10 +277,7 @@ viewWeb :: X ()
 viewWeb = windows (W.view "γ")
 
 myXPConfig :: XPConfig
-myXPConfig = defaultXPConfig
-    { fgColor = "#000000"
-    , bgColor = "#ff6565"
-    }
+myXPConfig = defaultXPConfig { fgColor = "#000000" , bgColor = "#ff6565" }
 
 spBeckon :: String -> X ()
 spBeckon = namedScratchpadAction scratchpads
@@ -295,3 +292,8 @@ scratchpads = [ NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (cent
               , NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
+
+-- TODO: scratchpad that brings up a named tmux session...
+
+--spawnEmacs :: X ()
+--spawnEmacs = spawn ("emacsclient -c")
