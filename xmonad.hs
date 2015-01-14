@@ -262,19 +262,19 @@ mySearchMap method = M.fromList
                        pb = searchEngine "pb" "http://tpb.unblock.re/search.php?q="
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
--- Prompt search: get input from the user via a prompt, then run the
---   search in firefox and automatically switch to the web workspace
+-- Prompt search: get input from the user via a prompt, run the search
+-- in the browser and automatically switch to the web workspace
 myPromptSearch :: SearchEngine -> X ()
 myPromptSearch (SearchEngine _ site)
   = inputPrompt myXPConfig "Search" ?+ \s ->
-      search "firefox" site s >> viewWeb
+      (search "chromium" site s >> viewWeb)
 
 -- Select search: do a search based on the X selection
 mySelectSearch :: SearchEngine -> X ()
 mySelectSearch eng = selectSearch eng >> viewWeb
 
 viewWeb :: X ()
-viewWeb = windows (W.view "γ")
+viewWeb = windows (W.view "3")
 
 myXPConfig :: XPConfig
 myXPConfig = defaultXPConfig { fgColor = "#000000" , bgColor = "#ff6565" }
