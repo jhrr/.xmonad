@@ -115,7 +115,7 @@ myLogHook h =
 --     { args = ["-bg", "yellow", "-fg", "black" "-xs", "1"] }
 
 myTerminal :: String
-myTerminal = "urxvt"
+myTerminal = "urxvtc"
 
 myBorderWidth :: Dimension
 myBorderWidth = 2
@@ -144,6 +144,7 @@ myManageHook = composeAll . concat $
    , [ className =? "Vlc" --> doShift "6" ]
    , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ className =? "Transmission-gtk" --> doShift "7" ]
+   , [ className =? "TeamSpeak 3" --> doShift "8" ]
    , [ className =? "Pidgin" --> doShift "9" ]
    , [ className =? "Skype" --> doShift "9" ]
    , [ isFullscreen --> doFullFloat ]
@@ -192,6 +193,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-m", spawn "soulseekqt")
           , ("M-r", spawn "evince")
           , ("M-s", spawn "skype")
+          , ("M-t", spawn "teamspeak3")
           , ("M-v", spawn "vlc")
           , ("M-<Backspace>", spawn "mpc toggle")
           , ("<XF86AudioNext>", spawn "mpc next")
@@ -209,7 +211,7 @@ myKeys =  [ ("M-u", focusUrgent)
             -- scratchpads
           , ("M-a", spBeckon "alsamixer")
           , ("M-n", spBeckon "ncmpcpp")
-          , ("M-t", spBeckon "htop")
+          , ("M-S-t", spBeckon "htop")
           , ("M-S-e", spBeckon "erl")
           , ("M-S-h", spBeckon "ghci")
           , ("M-S-p", spBeckon "ipython")
@@ -286,12 +288,12 @@ centerScreen :: Rational -> ManageHook
 centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
 
 scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "alsamixer" "urxvt -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
-              , NS "erl" "urxvt -e erl" (title =? "erl") (centerScreen 0.7)
-              , NS "ghci" "urxvt -e ghci" (title =? "ghci") (centerScreen 0.7)
-              , NS "htop" "urxvt -e htop" (title =? "htop") (centerScreen 0.7)
-              , NS "ipython" "urxvt -e ipython" (title =? "ipython") (centerScreen 0.7)
-              , NS "ncmpcpp" "urxvt -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
+scratchpads = [ NS "alsamixer" "urxvtc -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
+              , NS "erl" "urxvtc -e erl" (title =? "erl") (centerScreen 0.7)
+              , NS "ghci" "urxvtc -e ghci" (title =? "ghci") (centerScreen 0.7)
+              , NS "htop" "urxvtc -e htop" (title =? "htop") (centerScreen 0.7)
+              , NS "ipython" "urxvtc -e ipython" (title =? "ipython") (centerScreen 0.7)
+              , NS "ncmpcpp" "urxvtc -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
 
 -- TODO: scratchpad that brings up a named tmux session...
 
