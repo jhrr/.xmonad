@@ -150,7 +150,6 @@ myManageHook = composeAll . concat $
    , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ className =? "Transmission-gtk" --> doShift "7" ]
    , [ className =? "TeamSpeak 3" --> doShift "8" ]
-   , [ className =? "Pidgin" --> doShift "9" ]
    , [ className =? "Skype" --> doShift "9" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
@@ -163,11 +162,9 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
     reflectTiled = reflectHoriz tiled
     imLayout = avoidStruts $
                smartBorders $
-               withIM (1%9) pidginRoster $
                reflectHoriz $
                withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
       where
-        pidginRoster = ClassName "Pidgin" `And` Role "buddy_list"
         skypeRoster = ClassName "Skype"
                       `And` Not (Title "Options")
                       `And` Not (Role "Chats")
@@ -194,7 +191,6 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-d", spawn "transmission-gtk")
           , ("M-g", spawn "firefox")
           , ("M-c", spawn "chromium")
-          , ("M-i", spawn "pidgin")
           , ("M-m", spawn "soulseekqt")
           , ("M-r", spawn "evince")
           , ("M-s", spawn "skype")
