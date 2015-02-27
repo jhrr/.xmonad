@@ -26,8 +26,9 @@ import XMonad.Util.Run
 
 import Data.Ratio ((%))
 
+import Graphics.X11.Xinerama
 import System.IO
-import System.Posix.Unistd()
+import System.Posix.Unistd
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
@@ -57,6 +58,22 @@ dzenFont = "'inconsolata:size=8' "
 dzenColours :: String
 dzenColours = "-fg '#ffffff' -bg '#000000'"
 
+-- data Host = Desktop | Laptop Bool -- Bool informs us if the machine has a Windows key
+--   deriving (Eq, Read, Show)
+
+-- getHost :: IO Host
+-- getHost = do
+--   hostName <- nodeName `fmap` getSystemID
+--   return $ case hostName of
+--     "paradise" -> Laptop True
+--     "" -> Desktop
+--     _ -> Desktop
+
+-- Used in order to properly calculate and fix the width of the status
+-- bar across multiple screens.
+
+-- type ScreenNum = Int
+
 -- screenWidth :: ScreenNum -> IO Double
 -- screenWidth s = do
 --     dsp <- openDisplay ""
@@ -64,20 +81,8 @@ dzenColours = "-fg '#ffffff' -bg '#000000'"
 --     return $ case mss of
 --         Nothing -> 0
 --         Just [] -> 0
---         Just ss -> if s >= 0 && s < length ss -- prevent bad index
+--         Just ss -> if s >= 0 && s < length ss -- Prevent bad index
 --             then fromIntegral . xsi_width $ ss !! s else 0
-
--- Bool informs us if the machine has a Windows key
--- data Host = Laptop Bool | Desktop Bool | Other
---   deriving (Eq, Read, Show)
-
--- getHost :: IO Host
--- getHost = do
---   hostName <- nodeName `fmap` getSystemID
---   return $ case hostName of
---     "paradise" -> Thinkpad True
---     "" -> Desktop True
---     _ -> Other
 
 myConfig dzenL =
   withUrgencyHook NoUrgencyHook $ defaultConfig
