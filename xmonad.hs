@@ -52,7 +52,7 @@ myXmonadBar = "dzen2 -p -ta l -w 400 -xs 1 -fn " ++ dzenFont ++ dzenColours
 myStatusBar :: String
 myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn " ++ dzenFont ++ dzenColours
 
-dzenFont:: String
+dzenFont :: String
 dzenFont = "'inconsolata:size=8' "
 
 dzenColours :: String
@@ -71,7 +71,6 @@ dzenColours = "-fg '#ffffff' -bg '#000000'"
 
 -- Used in order to properly calculate and fix the width of the status
 -- bar across multiple screens.
-
 -- type ScreenNum = Int
 
 -- screenWidth :: ScreenNum -> IO Double
@@ -134,6 +133,7 @@ myWorkspaces = map show [1 .. 9 :: Int]
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
 
+-- TODO: scratchpad for this also.
 -- ircAction :: Host -> X ()
 -- ircAction host = case host of
 --   Laptop -> runInTerm "" "ssh <your screen server>"
@@ -143,6 +143,7 @@ myManageHook :: ManageHook
 myManageHook = composeAll . concat $
    [ [ className =? "Emacs" --> doShift "2" ]
    , [ className =? "Chromium" --> doShift "3" ]
+   -- , [(className =? "Chromium" <&&> resource =? "Dialog") --> doFloat]
    , [ className =? "Firefox" --> doShift "4" ]
    , [ className =? "Evince" --> doShift "5" ]
    , [ className =? "Zathura" --> doShift "5" ]
@@ -158,31 +159,22 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
   where
     tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
     standardLayouts = tall ||| Mirror tall ||| Full
-    tiled = smartBorders (ResizableTall 1 (2/100) (1/2) [])
-    reflectTiled = reflectHoriz tiled
-    imLayout = avoidStruts $
-               smartBorders $
-               reflectHoriz $
-               withIM (1%8) skypeRoster (tiled ||| reflectTiled ||| Grid)
+    imLayout = withIM (1%7) skype Grid
       where
-        skypeRoster = ClassName "Skype"
-                      `And` Not (Title "Options")
-                      `And` Not (Role "Chats")
-                      `And` Not (Role "CallWindowForm")
+        skype = And (ClassName "Skype") (Role "")
 
--- Layout for webdev with browser and horizontal terminal -- TODO: topicspace
--- myWide = Mirror $ Tall nmaster delta ratio
---     where
---         -- The default number of windows in the master pane
---         nmaster = 1
---         -- Percent of screen to increment by when resizing panes
---         delta   = 3/100
---         -- Default proportion of screen occupied by master pane
---         ratio   = 80/100
+    -- wideLayout = Mirror $ Tall nmaster delta ratio
+    --   where
+    --     -- The default number of windows in the master pane
+    --     nmaster = 1
+    --     -- Percent of screen to increment by when resizing panes
+    --     delta   = 3/100
+    --     -- Default proportion of screen occupied by master pane
+    --     ratio   = 80/100
 
--- Layout for coding with editor at 80 and two terminals that pop-out
--- when focussed -- TODO: topicspace
--- myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
+    -- Layout for coding with editor at 80 and two terminals that
+    -- pop-out when focussed -- TODO: topicspace
+    -- myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
@@ -266,7 +258,7 @@ mySearchMap method = M.fromList
                        pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
 -- Prompt search: get input from the user via a prompt, run the search
--- in the browser and automatically switch to the web workspace
+-- in the browser and automatically switch to the web workspace.
 myPromptSearch :: SearchEngine -> X ()
 myPromptSearch (SearchEngine _ site)
   = inputPrompt myXPConfig "Search" ?+ \s ->
@@ -295,8 +287,6 @@ scratchpads = [ NS "alsamixer" "urxvtc -e alsamixer" (title =? "alsamixer") (cen
               , NS "htop" "urxvtc -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvtc -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvtc -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
-
--- TODO: scratchpad that brings up a named tmux session...
 
 --spawnEmacs :: X ()
 --spawnEmacs = spawn ("emacsclient -c")
