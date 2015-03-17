@@ -47,10 +47,16 @@ main = do
     xmonad $ myConfig dzenL
 
 myXmonadBar :: String
-myXmonadBar = "dzen2 -p -ta l -w 400 -xs 1 -fn " ++ dzenFont ++ dzenColours
+myXmonadBar = dzenXmonad ++ dzenFont ++ dzenColours
 
 myStatusBar :: String
-myStatusBar = "conky -c ~/.conkyrc-xmonad | dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn " ++ dzenFont ++ dzenColours
+myStatusBar = invokeConky ++ dzenStatus ++ dzenFont ++ dzenColours
+
+dzenXmonad :: String
+dzenXmonad = "dzen2 -p -ta l -w 400 -xs 1 -fn "
+
+dzenStatus :: String
+dzenStatus = "dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn "
 
 dzenFont :: String
 dzenFont = "'inconsolata:size=8' "
@@ -58,7 +64,12 @@ dzenFont = "'inconsolata:size=8' "
 dzenColours :: String
 dzenColours = "-fg '#ffffff' -bg '#000000'"
 
--- data Host = Desktop | Laptop Bool -- Bool informs us if the machine has a Windows key
+invokeConky :: String
+invokeConky = "conky -c ~/.conkyrc-xmonad | "
+
+
+-- Bool informs us if a Windows key is present.
+-- data Host = Desktop | Laptop Bool
 --   deriving (Eq, Read, Show)
 
 -- getHost :: IO Host
@@ -173,7 +184,7 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
     --     ratio   = 80/100
 
     -- Layout for coding with editor at 80 and two terminals that
-    -- pop-out when focussed -- TODO: topicspace
+    -- pop-out when focussed.
     -- myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
 
 myKeys :: [ (String, X()) ]
