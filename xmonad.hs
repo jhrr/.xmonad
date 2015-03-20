@@ -9,6 +9,7 @@ import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.FixedColumn
 import XMonad.Layout.Grid
 import XMonad.Layout.IM
+import XMonad.Layout.IndependentScreens (countScreens)
 import XMonad.Layout.LimitWindows
 import XMonad.Layout.Magnifier
 import XMonad.Layout.NoBorders
@@ -34,10 +35,8 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
 
--- topic layer -- abstractions over common work patterns
--- application layer -- control over individual programs
--- shortcuts/bindings vs. prompts
--- TODO: TopicSpaces: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
+-- TODO: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
+-- TODO: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Util-Dzen.html
 
 main :: IO ()
 main = do
@@ -53,13 +52,13 @@ myStatusBar :: String
 myStatusBar = invokeConky ++ dzenStatus ++ dzenFont ++ dzenColours
 
 dzenXmonad :: String
-dzenXmonad = "dzen2 -p -ta l -w 400 -xs 1 -fn "
+dzenXmonad = "dzen2 -p -ta l -w 400 -xs 1 "
 
 dzenStatus :: String
-dzenStatus = "dzen2 -p -ta r -w 820 -x 460 -xs 1 -fn "
+dzenStatus = "dzen2 -p -ta r -w 820 -x 460 -xs 1 "
 
 dzenFont :: String
-dzenFont = "'inconsolata:size=8' "
+dzenFont = "-fn 'inconsolata:size=8' "
 
 dzenColours :: String
 dzenColours = "-fg '#ffffff' -bg '#000000'"
@@ -82,17 +81,20 @@ invokeConky = "conky -c ~/.conkyrc-xmonad | "
 
 -- Used in order to properly calculate and fix the width of the status
 -- bar across multiple screens.
--- type ScreenNum = Int
+type ScreenNum = Int
 
--- screenWidth :: ScreenNum -> IO Double
--- screenWidth s = do
---     dsp <- openDisplay ""
---     mss <- xineramaQueryScreens dsp
---     return $ case mss of
---         Nothing -> 0
---         Just [] -> 0
---         Just ss -> if s >= 0 && s < length ss -- Prevent bad index
---             then fromIntegral . xsi_width $ ss !! s else 0
+-- screenCount :: X ScreenNum
+-- screenCount = countScreens
+
+screenWidth :: ScreenNum -> IO Double
+screenWidth s = do
+    dsp <- openDisplay ""
+    mss <- xineramaQueryScreens dsp
+    return $ case mss of
+        Nothing -> 0
+        Just [] -> 0
+        Just ss -> if s >= 0 && s < length ss -- Prevent bad index
+            then fromIntegral . xsi_width $ ss !! s else 0
 
 myConfig dzenL =
   withUrgencyHook NoUrgencyHook $ defaultConfig
