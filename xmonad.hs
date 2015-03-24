@@ -25,6 +25,7 @@ import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 
+import Control.Applicative
 import Data.Ratio ((%))
 
 import Graphics.X11.Xinerama
@@ -83,9 +84,6 @@ invokeConky = "conky -c ~/.conkyrc-xmonad | "
 -- bar across multiple screens.
 type ScreenNum = Int
 
--- screenCount :: X ScreenNum
--- screenCount = countScreens
-
 screenWidth :: ScreenNum -> IO Double
 screenWidth s = do
     dsp <- openDisplay ""
@@ -95,6 +93,10 @@ screenWidth s = do
         Just [] -> 0
         Just ss -> if s >= 0 && s < length ss -- Prevent bad index
             then fromIntegral . xsi_width $ ss !! s else 0
+
+getScreens :: IO [ScreenNum]
+getScreens = openDisplay "" >>= liftA2 (<*) f closeDisplay
+    where f = fmap (zipWith const [0..]) . getScreenInfo
 
 myConfig dzenL =
   withUrgencyHook NoUrgencyHook $ defaultConfig
