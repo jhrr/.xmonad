@@ -167,16 +167,20 @@ myManageHook = composeAll . concat $
    , [ className =? "Transmission-gtk" --> doShift "7" ]
    , [ className =? "TeamSpeak 3" --> doShift "8" ]
    , [ className =? "Skype" --> doShift "9" ]
+   , [ className =? "Wync" --> doShift "9" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
 myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
   where
     tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
-    standardLayouts = tall ||| Mirror tall ||| Full
-    imLayout = withIM (1%7) skype Grid
+    standardLayouts = tall ||| Mirror tall ||| Full ||| Grid
+    imLayout = withIM (0.25) wync $
+               reflectHoriz $
+               withIM (0.25) skype (Grid ||| tall)
       where
         skype = And (ClassName "Skype") (Role "")
+        wync = ClassName "Wync"
 
     -- wideLayout = Mirror $ Tall nmaster delta ratio
     --   where
@@ -203,6 +207,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-s", spawn "skype")
           , ("M-t", spawn "teamspeak3")
           , ("M-v", spawn "vlc")
+          , ("M-w", spawn "wync")
           , ("M-<Backspace>", spawn "mpc toggle")
           , ("<XF86AudioNext>", spawn "mpc next")
           , ("<XF86AudioPrev>", spawn "mpc prev")
@@ -260,6 +265,7 @@ mySearchMap method = M.fromList
                      , ((0, xK_y), method youtube)
                        -- custom searches
                      , ((0, xK_d), method discogs)
+                     , ((0, xK_e), method egoogle)
                      , ((0, xK_b), method github)
                      , ((0, xK_i), method images)
                      , ((0, xK_t), method pb)
@@ -267,6 +273,7 @@ mySearchMap method = M.fromList
                      ]
                      where
                        discogs = searchEngine "discogs" "http://www.discogs.com/search/?q="
+                       egoogle = searchEngine "egoogle" "https://encrypted.google.com/#q="
                        github = searchEngine "github" "https://github.com/search?q="
                        images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
                        pb = searchEngine "pb" "http://tpb.unblock.re/search.php?q="
