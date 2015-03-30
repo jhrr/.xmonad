@@ -26,7 +26,6 @@ import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 
 import Control.Applicative
-import Data.Ratio ((%))
 
 import Graphics.X11.Xinerama
 import System.IO
@@ -177,7 +176,7 @@ myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
     standardLayouts = tall ||| Mirror tall ||| Full ||| Grid
     imLayout = withIM (0.25) wync $
                reflectHoriz $
-               withIM (0.25) skype (Grid ||| tall)
+               withIM (0.1) skype (Grid ||| tall)
       where
         skype = And (ClassName "Skype") (Role "")
         wync = ClassName "Wync"
