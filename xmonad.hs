@@ -187,15 +187,9 @@ myLayoutHook = onWorkspace "9" im standardLayouts
     standardLayouts = tall ||| wide ||| webdev ||| full ||| circle
     tall = named "tall" $ avoidStruts basic
     wide = named "wide" $ avoidStruts $ Mirror basic
+    webdev = named "webdev" $ avoidStruts $ Mirror $ Tall 1 (3/100) (80/100)
     full = named "full" $ smartBorders $ noBorders Full
     circle = named "circle" $ avoidStruts circleSimpleDefaultResizable
-    webdev = named "webdev" $ avoidStruts $ Mirror $ Tall nmaster delta ratio
-      where
-        nmaster = 1
-        delta = 3/100
-        ratio = 80/100
-
-    -- Layout for IM buddy lists on either side of workspace
     im = named "IM" $ avoidStruts $
                       withIM 0.25 skype $
                       reflectHoriz $
