@@ -4,7 +4,7 @@ import XMonad.Actions.Submap
 import XMonad.Actions.WorkspaceNames()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat, doRectFloat)
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.DecorationMadness
 import XMonad.Layout.FixedColumn
@@ -170,9 +170,17 @@ myManageHook = composeAll . concat $
    , [ className =? "TeamSpeak 3" --> doShift "8" ]
    , [ className =? "Wync" --> doShift "8" ]
    , [ className =? "Pidgin" --> doShift "9" ]
+   , [ classNotRole ("Pidgin", "buddy_list") --> doCenterFloat ]
    , [ className =? "Skype" --> doShift "9" ]
+   , [ classNotRole ("Skype", "MainWindow") --> doCenterFloat ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
+       where
+          classNotRole :: (String, String) -> Query Bool
+          classNotRole (c,r) = (className =? c <&&> role /=? r)
+          role = stringProperty "WM_WINDOW_ROLE"
+
+-- TODO: using (fmap not): className =? "Spacefm" <&&> role /=? "file_manager" <&&> (fmap not) isDialog
 
 -- Default tiling algorithm partitions the screen into two panes
 basic :: Tall a
