@@ -7,33 +7,25 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.DecorationMadness
-import XMonad.Layout.FixedColumn
 import XMonad.Layout.Grid
 import XMonad.Layout.IM
-import XMonad.Layout.IndependentScreens (countScreens)
-import XMonad.Layout.LimitWindows
-import XMonad.Layout.Magnifier
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect (reflectHoriz)
-import XMonad.Layout.ResizableTile
-import XMonad.Layout.StackTile
 import XMonad.ManageHook()
 import XMonad.Prompt
 import XMonad.Prompt.Input
 import XMonad.Prompt.Ssh
-import XMonad.Util.Dzen
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 
 import Control.Applicative
-import Data.Ratio ((%))
 
 import Graphics.X11.Xinerama
 import System.IO
-import System.Posix.Unistd
+-- import System.Posix.Unistd
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
@@ -71,8 +63,8 @@ invokeConky :: String
 invokeConky = "conky -c ~/.conkyrc-xmonad | "
 
 -- Bool informs us if a Windows key is present.
--- data Host = Desktop | Laptop Bool
---   deriving (Eq, Read, Show)
+data Host = Desktop | Laptop Bool
+  deriving (Eq, Read, Show)
 
 -- getHost :: IO Host
 -- getHost = do
@@ -172,7 +164,7 @@ myManageHook = composeAll . concat $
    , [ className =? "Pidgin" --> doShift "9" ]
    , [ classNotRole ("Pidgin", "buddy_list") --> doCenterFloat ]
    , [ className =? "Skype" --> doShift "9" ]
-   , [ classNotRole ("Skype", "MainWindow") --> doCenterFloat ]
+   -- , [ classNotRole ("Skype", "MainWindow") --> doCenterFloat ]  -- Doesn't work
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
        where
