@@ -6,12 +6,14 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog, doCenterFloat, doFullFloat, doRectFloat)
 import XMonad.Hooks.UrgencyHook
+import XMonad.Layout.DecorationMadness
 import XMonad.Layout.FixedColumn
 import XMonad.Layout.Grid
 import XMonad.Layout.IM
 import XMonad.Layout.IndependentScreens (countScreens)
 import XMonad.Layout.LimitWindows
 import XMonad.Layout.Magnifier
+import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect (reflectHoriz)
@@ -21,11 +23,13 @@ import XMonad.ManageHook()
 import XMonad.Prompt
 import XMonad.Prompt.Input
 import XMonad.Prompt.Ssh
+import XMonad.Util.Dzen
 import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.Run
 
 import Control.Applicative
+import Data.Ratio ((%))
 
 import Graphics.X11.Xinerama
 import System.IO
@@ -34,14 +38,14 @@ import System.Posix.Unistd
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
-
 -- TODO: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
 -- TODO: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Util-Dzen.html
+-- TODO: https://github.com/supki/xmonad-screenshot
 
 main :: IO ()
 main = do
-    dzenL <- spawnPipe myXmonadBar
-    dzenR <- spawnPipe myStatusBar
+    dzenL <- spawnPipe myXmonadBar  -- dzenLeft
+    _ <- spawnPipe myStatusBar      -- dzenRight
     -- host <- getHost
     xmonad $ myConfig dzenL
 
@@ -65,7 +69,6 @@ dzenColours = "-fg '#ffffff' -bg '#000000'"
 
 invokeConky :: String
 invokeConky = "conky -c ~/.conkyrc-xmonad | "
-
 
 -- Bool informs us if a Windows key is present.
 -- data Host = Desktop | Laptop Bool
@@ -165,34 +168,52 @@ myManageHook = composeAll . concat $
    , [ className =? "Soulseekqt" --> doShift "7" ]
    , [ className =? "Transmission-gtk" --> doShift "7" ]
    , [ className =? "TeamSpeak 3" --> doShift "8" ]
+   , [ className =? "Wync" --> doShift "8" ]
+   , [ className =? "Pidgin" --> doShift "9" ]
    , [ className =? "Skype" --> doShift "9" ]
-   , [ className =? "Wync" --> doShift "9" ]
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
-myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
+-- myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
+--   where
+--     tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
+--     standardLayouts = tall ||| Mirror tall ||| Full ||| Grid
+--     imLayout = withIM 0.25 skype (Grid ||| tall)
+--       where
+--         skype = And (ClassName "Skype") (Role "")
+
+-- default tiling algorithm partitions the screen into two panes
+basic :: Tall a
+basic = Tall nmaster delta ratio
   where
-    tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
-    standardLayouts = tall ||| Mirror tall ||| Full ||| Grid
-    imLayout = withIM (0.25) wync $
-               reflectHoriz $
-               withIM (0.1) skype (Grid ||| tall)
+    nmaster = 1 -- The default number of windows in the master pane
+    delta = 3/100 -- Percent of screen to increment by when resizing panes
+    ratio = 1/2 -- Default proportion of screen occupied by master pane
+
+myLayoutHook = onWorkspace "9" im standardLayouts
+  where
+    standardLayouts = tall ||| wide ||| webdev ||| full ||| circle
+    tall = named "tall" $ avoidStruts basic
+    wide = named "wide" $ avoidStruts $ Mirror basic
+    full = named "full" $ smartBorders $ noBorders Full
+    circle = named "circle" $ avoidStruts circleSimpleDefaultResizable
+    webdev = named "webdev" $ avoidStruts $ Mirror $ Tall nmaster delta ratio
       where
-        skype = And (ClassName "Skype") (Role "")
-        wync = ClassName "Wync"
+        nmaster = 1
+        delta = 3/100
+        ratio = 80/100
 
-    -- wideLayout = Mirror $ Tall nmaster delta ratio
-    --   where
-    --     -- The default number of windows in the master pane
-    --     nmaster = 1
-    --     -- Percent of screen to increment by when resizing panes
-    --     delta   = 3/100
-    --     -- Default proportion of screen occupied by master pane
-    --     ratio   = 80/100
-
-    -- Layout for coding with editor at 80 and two terminals that
-    -- pop-out when focussed.
-    -- myCode = limitWindows 4 $ magnifiercz' 1.4 $ FixedColumn 1 1 80 10
+    -- Layout for IM buddy lists on either side of workspace
+    im = named "IM" $ avoidStruts $
+                      withIM 0.25 skype $
+                      reflectHoriz $
+                      withIM 0.25 pidgin (Grid ||| tall ||| circle)
+      where
+        pidgin = ClassName "Pidgin" `And` Role "buddy_list"
+        skype = ClassName "Skype" `And`
+                (Not (Title "Options")) `And`
+                (Not (Role "Chats")) `And`
+                (Not (Role "CallWindowForm"))
 
 myKeys :: [ (String, X()) ]
 myKeys =  [ ("M-u", focusUrgent)
@@ -202,6 +223,7 @@ myKeys =  [ ("M-u", focusUrgent)
           , ("M-g", spawn "firefox")
           , ("M-c", spawn "chromium")
           , ("M-m", spawn "soulseekqt")
+          , ("M-i", spawn "pidgin")
           , ("M-r", spawn "evince")
           , ("M-s", spawn "skype")
           , ("M-t", spawn "teamspeak3")
@@ -283,7 +305,7 @@ mySearchMap method = M.fromList
 myPromptSearch :: SearchEngine -> X ()
 myPromptSearch (SearchEngine _ site)
   = inputPrompt myXPConfig "Search" ?+ \s ->
-      (search "chromium" site s >> viewWeb)
+      search "chromium" site s >> viewWeb
 
 -- Select search: do a search based on the X selection
 mySelectSearch :: SearchEngine -> X ()
