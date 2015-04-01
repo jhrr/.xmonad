@@ -174,15 +174,7 @@ myManageHook = composeAll . concat $
    , [ isFullscreen --> doFullFloat ]
    , [ isDialog --> doCenterFloat ] ]
 
--- myLayoutHook = avoidStruts $ onWorkspace "9" imLayout standardLayouts
---   where
---     tall = Tall 1 0.02 0.5  -- numMasters, reizeInc, splitRatio
---     standardLayouts = tall ||| Mirror tall ||| Full ||| Grid
---     imLayout = withIM 0.25 skype (Grid ||| tall)
---       where
---         skype = And (ClassName "Skype") (Role "")
-
--- default tiling algorithm partitions the screen into two panes
+-- Default tiling algorithm partitions the screen into two panes
 basic :: Tall a
 basic = Tall nmaster delta ratio
   where
