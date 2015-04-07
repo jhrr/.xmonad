@@ -25,7 +25,7 @@ import Control.Applicative
 
 import Graphics.X11.Xinerama
 import System.IO
--- import System.Posix.Unistd
+import System.Posix.Unistd
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
@@ -36,9 +36,9 @@ import qualified Data.Map as M
 
 main :: IO ()
 main = do
-    dzenL <- spawnPipe myXmonadBar  -- dzenLeft
-    _ <- spawnPipe myStatusBar      -- dzenRight
-    -- host <- getHost
+    dzenL <- spawnPipe myXmonadBar  -- dzen left
+    _ <- spawnPipe myStatusBar      -- dzen right
+    host <- getHost -- host <- getHost
     xmonad $ myConfig dzenL
 
 myXmonadBar :: String
@@ -66,13 +66,13 @@ invokeConky = "conky -c ~/.conkyrc-xmonad | "
 data Host = Desktop | Laptop Bool
   deriving (Eq, Read, Show)
 
--- getHost :: IO Host
--- getHost = do
---   hostName <- nodeName `fmap` getSystemID
---   return $ case hostName of
---     "paradise" -> Laptop True
---     "" -> Desktop
---     _ -> Desktop
+getHost :: IO Host
+getHost = do
+  hostName <- nodeName `fmap` getSystemID
+  return $ case hostName of
+    "paradise" -> Laptop True
+    "despair" -> Desktop
+    _ -> Desktop
 
 -- Used in order to properly calculate and fix the width of the status
 -- bar across multiple screens.
