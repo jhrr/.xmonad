@@ -307,22 +307,22 @@ viewWeb = windows (W.view "3")
 myXPConfig :: XPConfig
 myXPConfig = defaultXPConfig { fgColor = "#000000" , bgColor = "#ff6565" }
 
+-- Calculate center of screen rectangle
+centerScreen :: Rational -> ManageHook
+centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
+
 spBeckon :: String -> X ()
 spBeckon = namedScratchpadAction scratchpads
 
--- Calculate center of screen rectangle
-cScreen :: Rational -> ManageHook
-cScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
-
-scratchpadHelper :: String -> Rational -> NamedScratchpad
-scratchpadHelper spname size =
-  NS (spname) ("urxvtc -e " ++ spname) (title =? spname) (cScreen size)
+spHelper :: String -> Rational -> NamedScratchpad
+spHelper spname size =
+  NS (spname) ("urxvtc -e " ++ spname) (title =? spname) (centerScreen size)
 
 scratchpads :: [NamedScratchpad]
 scratchpads =
-  [ scratchpadHelper "alsamixer" 0.7
-  , scratchpadHelper "erl" 0.7
-  , scratchpadHelper "ghci" 0.7
-  , scratchpadHelper "htop" 0.7
-  , scratchpadHelper "ipython" 0.7
-  , scratchpadHelper "ncmpcpp" 0.7 ]
+  [ spHelper "alsamixer" 0.7
+  , spHelper "erl" 0.7
+  , spHelper "ghci" 0.7
+  , spHelper "htop" 0.7
+  , spHelper "ipython" 0.7
+  , spHelper "ncmpcpp" 0.7 ]
