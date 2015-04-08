@@ -107,9 +107,9 @@ myConfig dzenL host =
         } `additionalKeysP` (myKeys host)
 
 myLogHook :: Handle -> X ()
-myLogHook h =
+myLogHook dzenL =
   dynamicLogWithPP $ dzenPP
-          { ppOutput = hPutStrLn h
+          { ppOutput = hPutStrLn dzenL
           , ppCurrent = dzenColor "#f8f893" "" . wrap "[" "]" . noScratchPad
           , ppTitle = dzenColor "green" "" . pad. shorten 40
           , ppHidden = dzenColor "#5b605e" "" . pad . noScratchPad
@@ -123,9 +123,6 @@ myLogHook h =
         }
         where
           noScratchPad ws = if ws == "NSP" then "" else ws
-
--- myUrgencyHook = withUrgencyHook dzenUrgencyHook
---     { args = ["-bg", "yellow", "-fg", "black" "-xs", "1"] }
 
 myTerminal :: String
 myTerminal = "urxvtc"
@@ -313,13 +310,19 @@ myXPConfig = defaultXPConfig { fgColor = "#000000" , bgColor = "#ff6565" }
 spBeckon :: String -> X ()
 spBeckon = namedScratchpadAction scratchpads
 
-centerScreen :: Rational -> ManageHook
-centerScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
+-- Calculate center of screen rectangle
+cScreen :: Rational -> ManageHook
+cScreen h = doRectFloat $ W.RationalRect ((1 - h)/2) ((1 - h)/2) h h
+
+scratchpadHelper :: String -> Rational -> NamedScratchpad
+scratchpadHelper spname size =
+  NS (spname) ("urxvtc -e " ++ spname) (title =? spname) (cScreen size)
 
 scratchpads :: [NamedScratchpad]
-scratchpads = [ NS "alsamixer" "urxvtc -e alsamixer" (title =? "alsamixer") (centerScreen 0.7)
-              , NS "erl" "urxvtc -e erl" (title =? "erl") (centerScreen 0.7)
-              , NS "ghci" "urxvtc -e ghci" (title =? "ghci") (centerScreen 0.7)
-              , NS "htop" "urxvtc -e htop" (title =? "htop") (centerScreen 0.7)
-              , NS "ipython" "urxvtc -e ipython" (title =? "ipython") (centerScreen 0.7)
-              , NS "ncmpcpp" "urxvtc -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
+scratchpads =
+  [ scratchpadHelper "alsamixer" 0.7
+  , scratchpadHelper "erl" 0.7
+  , scratchpadHelper "ghci" 0.7
+  , scratchpadHelper "htop" 0.7
+  , scratchpadHelper "ipython" 0.7
+  , scratchpadHelper "ncmpcpp" 0.7 ]
