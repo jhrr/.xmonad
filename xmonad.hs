@@ -38,8 +38,8 @@ main :: IO ()
 main = do
     dzenL <- spawnPipe myXmonadBar  -- dzen left
     _ <- spawnPipe myStatusBar      -- dzen right
-    host <- getHost -- host <- getHost
-    xmonad $ myConfig dzenL
+    host <- getHost
+    xmonad $ myConfig dzenL host
 
 myXmonadBar :: String
 myXmonadBar = dzenXmonad ++ dzenFont ++ dzenColours
@@ -90,9 +90,9 @@ screenWidth s = do
 
 getScreens :: IO [ScreenNum]
 getScreens = openDisplay "" >>= liftA2 (<*) f closeDisplay
-    where f = fmap (zipWith const [0..]) . getScreenInfo
+  where f = fmap (zipWith const [0..]) . getScreenInfo
 
-myConfig dzenL =
+myConfig dzenL host =
   withUrgencyHook NoUrgencyHook $ defaultConfig
         { manageHook = manageDocks
                        <+> myManageHook
@@ -104,7 +104,7 @@ myConfig dzenL =
         , borderWidth = myBorderWidth
         , focusFollowsMouse = myFocusFollowsMouse
         , XMonad.workspaces = myWorkspaces
-        } `additionalKeysP` myKeys
+        } `additionalKeysP` (myKeys host)
 
 myLogHook :: Handle -> X ()
 myLogHook h =
@@ -150,27 +150,26 @@ myFocusFollowsMouse = True
 
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
-   [ [ className =? "Emacs" --> doShift "2" ]
-   , [ className =? "Chromium" --> doShift "3" ]
-   -- , [(className =? "Chromium" <&&> resource =? "Dialog") --> doFloat]
-   , [ className =? "Firefox" --> doShift "4" ]
-   , [ className =? "Evince" --> doShift "5" ]
-   , [ className =? "Zathura" --> doShift "5" ]
-   , [ className =? "Vlc" --> doShift "6" ]
-   , [ className =? "Soulseekqt" --> doShift "7" ]
-   , [ className =? "Transmission-gtk" --> doShift "7" ]
-   , [ className =? "TeamSpeak 3" --> doShift "8" ]
-   , [ className =? "Wync" --> doShift "8" ]
-   , [ className =? "Pidgin" --> doShift "9" ]
-   , [ classNotRole ("Pidgin", "buddy_list") --> doCenterFloat ]
-   , [ className =? "Skype" --> doShift "9" ]
-   -- , [ classNotRole ("Skype", "MainWindow") --> doCenterFloat ]  -- Doesn't work
-   , [ isFullscreen --> doFullFloat ]
-   , [ isDialog --> doCenterFloat ] ]
-       where
-          classNotRole :: (String, String) -> Query Bool
-          classNotRole (c,r) = (className =? c <&&> role /=? r)
-          role = stringProperty "WM_WINDOW_ROLE"
+    [ [ className =? "Emacs" --> doShift "2" ]
+    , [ className =? "Chromium" --> doShift "3" ]
+      -- , [(className =? "Chromium" <&&> resource =? "Dialog") --> doFloat]
+    , [ className =? "Firefox" --> doShift "4" ]
+    , [ className =? "Evince" --> doShift "5" ]
+    , [ className =? "Zathura" --> doShift "5" ]
+    , [ className =? "Vlc" --> doShift "6" ]
+    , [ className =? "Soulseekqt" --> doShift "7" ]
+    , [ className =? "Transmission-gtk" --> doShift "7" ]
+    , [ className =? "TeamSpeak 3" --> doShift "8" ]
+    , [ className =? "Wync" --> doShift "8" ]
+    , [ className =? "Pidgin" --> doShift "9" ]
+    , [ classNotRole ("Pidgin", "buddy_list") --> doCenterFloat ]
+    , [ className =? "Skype" --> doShift "9" ]
+    , [ isFullscreen --> doFullFloat ]
+    , [ isDialog --> doCenterFloat ] ]
+  where
+    classNotRole :: (String, String) -> Query Bool
+    classNotRole (c,r) = (className =? c <&&> role /=? r)
+    role = stringProperty "WM_WINDOW_ROLE"
 
 -- TODO: using (fmap not): className =? "Spacefm" <&&> role /=? "file_manager" <&&> (fmap not) isDialog
 
@@ -201,97 +200,105 @@ myLayoutHook = onWorkspace "9" im standardLayouts
                 (Not (Role "Chats")) `And`
                 (Not (Role "CallWindowForm"))
 
-myKeys :: [ (String, X()) ]
-myKeys =  [ ("M-u", focusUrgent)
-          , ("M-S-u", clearUrgents)
-            -- spawning
-          , ("M-d", spawn "transmission-gtk")
-          , ("M-g", spawn "firefox")
-          , ("M-c", spawn "chromium")
-          , ("M-m", spawn "soulseekqt")
-          , ("M-i", spawn "pidgin")
-          , ("M-r", spawn "evince")
-          , ("M-s", spawn "skype")
-          , ("M-t", spawn "teamspeak3")
-          , ("M-v", spawn "vlc")
-          , ("M-w", spawn "wync")
-          , ("M-<Backspace>", spawn "mpc toggle")
-          , ("<XF86AudioNext>", spawn "mpc next")
-          , ("<XF86AudioPrev>", spawn "mpc prev")
-          , ("C-M-r", spawn "mpc random")  -- toggle random play mode
-          -- , ("M-<F1>", spawn "mpc pause; xscreensaver-command -lock")
+myKeys :: Host -> [ (String, X()) ]
+myKeys host =  [ ("M-u", focusUrgent)
+               , ("M-S-u", clearUrgents)
+                 -- spawning
+               , ("M-d", spawn "transmission-gtk")
+               , ("M-e", spawnEmacs)
+               , ("M-g", spawn "firefox")
+               , ("M-c", spawn "chromium")
+               , ("M-m", spawn "soulseekqt")
+               , ("M-i", spawn "pidgin")
+               , ("M-r", spawn "evince")
+               , ("M-s", spawn "skype")
+               , ("M-t", spawn "teamspeak3")
+               , ("M-v", spawn "vlc")
+               , ("M-w", spawn "wync")
+               , ("M-<Backspace>", spawn "mpc toggle")
+               , ("<XF86AudioNext>", spawn "mpc next")
+               , ("<XF86AudioPrev>", spawn "mpc prev")
+               , ("C-M-r", spawn "mpc random")  -- toggle random play mode
+                 -- , ("M-<F1>", spawn "mpc pause; xscreensaver-command -lock")
+               , ("M-<Print>", spawn "scrot")
+               , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
 
-          -- , ("M-S-s", spawn $
-          --         case host of
-          --           Thinkpad _ -> "systemctl suspend"
-          --           _ -> "")
+                 -- suspend/hibernate
+               , ("M-S-s", spawn $
+                             case host of
+                               Laptop _ -> "systemctl suspend"
+                               _ -> ""
+                 )
 
-          , ("M-<Print>", spawn "scrot")
-          , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
-            -- scratchpads
-          , ("M-a", spBeckon "alsamixer")
-          , ("M-n", spBeckon "ncmpcpp")
-          , ("M-S-t", spBeckon "htop")
-          , ("M-S-e", spBeckon "erl")
-          , ("M-S-h", spBeckon "ghci")
-          , ("M-S-p", spBeckon "ipython")
-            -- screens
-          -- , ("M-s", nextScreen)
-          -- , ("M-w", swapNextScreen)
-          -- , ("M-e", shiftNextScreen)
-            -- searches
-          , ("M-p s", sshPrompt myXPConfig)
-          , ("M-/", submap . mySearchMap $ myPromptSearch)
-          , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
+                 -- scratchpads
+               , ("M-a", spBeckon "alsamixer")
+               , ("M-n", spBeckon "ncmpcpp")
+               , ("M-S-t", spBeckon "htop")
+               , ("M-S-e", spBeckon "erl")
+               , ("M-S-h", spBeckon "ghci")
+               , ("M-S-p", spBeckon "ipython")
+                 -- screens
+               -- , ("M-s", nextScreen)
+               -- , ("M-w", swapNextScreen)
+               -- , ("M-e", shiftNextScreen)
+               -- searches
+               , ("M-p s", sshPrompt myXPConfig)
+               , ("M-/", submap . mySearchMap $ myPromptSearch)
+               , ("M-S-/", submap . mySearchMap $ mySelectSearch) ]
 
-          ++
+               ++
 
-          [ (otherModMasks ++ "M-" ++ [key], action tag)
-          | (tag, key)  <- zip myWorkspaces "123456789"
-          , (otherModMasks, action) <- [ ("", windows . W.greedyView) -- was W.greedyView
-                                       , ("S-", windows . W.shift)] ]
+               [ (otherModMasks ++ "M-" ++ [key], action tag)
+               | (tag, key)  <- zip myWorkspaces "123456789"
+               , (otherModMasks, action) <- [ ("", windows . W.greedyView)
+                                            , ("S-", windows . W.shift)] ]
 
-          -- mod-[1..],       Switch to workspace N
-          -- mod-shift-[1..], Move client to workspace N
-          -- mod-ctrl-[1..],  Switch to workspace N on other screen
+                 -- mod-[1..],       Switch to workspace N
+                 -- mod-shift-[1..], Move client to workspace N
+                 -- mod-ctrl-[1..],  Switch to workspace N on other screen
 
-          -- [ (m ++ "M-" ++ [k], f i)
-          --     | (i, k) <- zip (XMonad.workspaces conf) "123456789-=[]\\"
-          --     , (f, m) <- [ (windows . W.shift, "S-")
-          --                 , (goto', "")
-          --                 , (\ws -> nextScreen >> (goto' $ ws), "C-")
-          --                 ]]
+               -- [ (m ++ "M-" ++ [k], f i)
+               --     | (i, k) <- zip (XMonad.workspaces conf) "123456789-=[]\\"
+               --     , (f, m) <- [ (windows . W.shift, "S-")
+               --                 , (goto', "")
+               --                 , (\ws -> nextScreen >> (goto' $ ws), "C-")
+               --                 ]]
 
 mySearchMap :: (SearchEngine -> a) -> M.Map (KeyMask, KeySym) a
-mySearchMap method = M.fromList
-                     [ ((0, xK_g), method google)
-                     , ((shiftMask, xK_h), method hackage)
-                     , ((0, xK_h), method hoogle)
-                     , ((0, xK_m), method maps)
-                     , ((0, xK_w), method wikipedia)
-                     , ((0, xK_y), method youtube)
-                       -- custom searches
-                     , ((0, xK_d), method discogs)
-                     , ((0, xK_e), method egoogle)
-                     , ((0, xK_b), method github)
-                     , ((0, xK_i), method images)
-                     , ((0, xK_t), method pb)
-                     , ((0, xK_p), method pypi)
-                     ]
-                     where
-                       discogs = searchEngine "discogs" "http://www.discogs.com/search/?q="
-                       egoogle = searchEngine "egoogle" "https://encrypted.google.com/#q="
-                       github = searchEngine "github" "https://github.com/search?q="
-                       images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
-                       pb = searchEngine "pb" "http://tpb.unblock.re/search.php?q="
-                       pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
+mySearchMap method =
+    M.fromList
+    [ ((0, xK_g), method google)
+    , ((shiftMask, xK_h), method hackage)
+    , ((0, xK_h), method hoogle)
+    , ((0, xK_m), method maps)
+    , ((0, xK_w), method wikipedia)
+    , ((0, xK_y), method youtube)
+      -- custom searches
+    , ((0, xK_d), method discogs)
+    , ((0, xK_e), method egoogle)
+    , ((0, xK_b), method github)
+    , ((0, xK_i), method images)
+    , ((0, xK_t), method pb)
+    , ((0, xK_p), method pypi)
+    ]
+  where
+    discogs = searchEngine "discogs" "http://www.discogs.com/search/?q="
+    egoogle = searchEngine "egoogle" "https://encrypted.google.com/#q="
+    github = searchEngine "github" "https://github.com/search?q="
+    images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
+    pb = searchEngine "pb" "http://tpb.unblock.re/search.php?q="
+    pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
+
+-- Spawn a new emacs frame
+spawnEmacs :: X ()
+spawnEmacs = spawn ("emacsclient -c -q")
 
 -- Prompt search: get input from the user via a prompt, run the search
 -- in the browser and automatically switch to the web workspace.
 myPromptSearch :: SearchEngine -> X ()
-myPromptSearch (SearchEngine _ site)
-  = inputPrompt myXPConfig "Search" ?+ \s ->
-      search "chromium" site s >> viewWeb
+myPromptSearch (SearchEngine _ site) =
+  inputPrompt myXPConfig "Search" ?+ \s ->
+    search "chromium" site s >> viewWeb
 
 -- Select search: do a search based on the X selection
 mySelectSearch :: SearchEngine -> X ()
@@ -316,6 +323,3 @@ scratchpads = [ NS "alsamixer" "urxvtc -e alsamixer" (title =? "alsamixer") (cen
               , NS "htop" "urxvtc -e htop" (title =? "htop") (centerScreen 0.7)
               , NS "ipython" "urxvtc -e ipython" (title =? "ipython") (centerScreen 0.7)
               , NS "ncmpcpp" "urxvtc -e ncmpcpp" (title =? "ncmpcpp") (centerScreen 0.7) ]
-
---spawnEmacs :: X ()
---spawnEmacs = spawn ("emacsclient -c")
