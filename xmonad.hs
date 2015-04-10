@@ -1,7 +1,6 @@
 import XMonad
 import XMonad.Actions.Search hiding (Query, images)
 import XMonad.Actions.Submap
-import XMonad.Actions.WorkspaceNames()
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -13,7 +12,6 @@ import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect (reflectHoriz)
-import XMonad.ManageHook()
 import XMonad.Prompt
 import XMonad.Prompt.Input
 import XMonad.Prompt.Ssh
@@ -120,9 +118,9 @@ myLogHook dzenL =
           --, ppUrgent = dzenColor "yellow" "red" . pad . dzenStrip
           , ppSep = " "
           , ppWsSep = ""
-        }
-        where
-          noScratchPad ws = if ws == "NSP" then "" else ws
+          }
+  where
+    noScratchPad ws = if ws == "NSP" then "" else ws
 
 myTerminal :: String
 myTerminal = "urxvtc"
@@ -157,7 +155,6 @@ myManageHook = composeAll . concat $
     , [ className =? "Soulseekqt" --> doShift "7" ]
     , [ className =? "Transmission-gtk" --> doShift "7" ]
     , [ className =? "TeamSpeak 3" --> doShift "8" ]
-    , [ className =? "Wync" --> doShift "8" ]
     , [ className =? "Pidgin" --> doShift "9" ]
     , [ classNotRole ("Pidgin", "buddy_list") --> doCenterFloat ]
     , [ className =? "Skype" --> doShift "9" ]
@@ -211,7 +208,6 @@ myKeys host =  [ ("M-u", focusUrgent)
                , ("M-s", spawn "skype")
                , ("M-t", spawn "teamspeak3")
                , ("M-v", spawn "vlc")
-               , ("M-w", spawn "wync")
                , ("M-<Backspace>", spawn "mpc toggle")
                , ("<XF86AudioNext>", spawn "mpc next")
                , ("<XF86AudioPrev>", spawn "mpc prev")
