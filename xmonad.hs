@@ -28,9 +28,6 @@ import System.Posix.Unistd
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
--- TODO: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Actions-TopicSpace.html
--- TODO: http://xmonad.org/xmonad-docs/xmonad-contrib/XMonad-Util-Dzen.html
--- TODO: https://github.com/supki/xmonad-screenshot
 
 main :: IO ()
 main = do
@@ -46,10 +43,10 @@ myStatusBar :: String
 myStatusBar = invokeConky ++ dzenStatus ++ dzenFont ++ dzenColours
 
 dzenXmonad :: String
-dzenXmonad = "dzen2 -p -ta l -w 400 -xs 1 "
+dzenXmonad = "dzen2 -p -ta l -w 450 -xs 1 "
 
 dzenStatus :: String
-dzenStatus = "dzen2 -p -ta r -w 820 -x 460 -xs 1 "
+dzenStatus = "dzen2 -p -ta r -w 800 -x 450 -xs 1 "
 
 dzenFont :: String
 dzenFont = "-fn 'inconsolata:size=8' "
@@ -72,8 +69,8 @@ getHost = do
     "despair" -> Desktop
     _ -> Desktop
 
--- Used in order to properly calculate and fix the width of the status
--- bar across multiple screens.
+-- To be used in order to properly calculate and fix the width of the
+-- status bar across multiple screens.
 type ScreenNum = Int
 
 screenWidth :: ScreenNum -> IO Double
@@ -102,7 +99,7 @@ myConfig dzenL host =
         , borderWidth = myBorderWidth
         , focusFollowsMouse = myFocusFollowsMouse
         , XMonad.workspaces = myWorkspaces
-        } `additionalKeysP` (myKeys host)
+        } `additionalKeysP` myKeys host
 
 myLogHook :: Handle -> X ()
 myLogHook dzenL =
@@ -162,7 +159,7 @@ myManageHook = composeAll . concat $
     , [ isDialog --> doCenterFloat ] ]
   where
     classNotRole :: (String, String) -> Query Bool
-    classNotRole (c,r) = (className =? c <&&> role /=? r)
+    classNotRole (c,r) = className =? c <&&> role /=? r
     role = stringProperty "WM_WINDOW_ROLE"
 
 -- TODO: using (fmap not): className =? "Spacefm" <&&> role /=? "file_manager" <&&> (fmap not) isDialog
@@ -190,9 +187,9 @@ myLayoutHook = onWorkspace "9" im standardLayouts
       where
         pidgin = ClassName "Pidgin" `And` Role "buddy_list"
         skype = ClassName "Skype" `And`
-                (Not (Title "Options")) `And`
-                (Not (Role "Chats")) `And`
-                (Not (Role "CallWindowForm"))
+                Not (Title "Options") `And`
+                Not (Role "Chats") `And`
+                Not (Role "CallWindowForm")
 
 myKeys :: Host -> [ (String, X()) ]
 myKeys host =  [ ("M-u", focusUrgent)
@@ -284,7 +281,7 @@ mySearchMap method =
 
 -- Spawn a new emacs frame
 spawnEmacs :: X ()
-spawnEmacs = spawn ("emacsclient -c -q")
+spawnEmacs = spawn "emacsclient -c -q"
 
 -- Prompt search: get input from the user via a prompt, run the search
 -- in the browser and automatically switch to the web workspace.
@@ -312,7 +309,7 @@ spBeckon = namedScratchpadAction scratchpads
 
 spHelper :: String -> Rational -> NamedScratchpad
 spHelper spname size =
-  NS (spname) ("urxvtc -e " ++ spname) (title =? spname) (centerScreen size)
+  NS spname ("urxvtc -e " ++ spname) (title =? spname) (centerScreen size)
 
 scratchpads :: [NamedScratchpad]
 scratchpads =
@@ -321,4 +318,14 @@ scratchpads =
   , spHelper "ghci" 0.7
   , spHelper "htop" 0.7
   , spHelper "ipython" 0.7
-  , spHelper "ncmpcpp" 0.7 ]
+  , spHelper "ncmpcpp" 0.7
+  ]
+
+-- sudoSpawn command = withPrompt "Password" $ run command
+--   where run command password =
+--           spawn $ concat ["echo ", password, " | sudo -S ", command]
+
+-- withPrompt prompt fn = inputPrompt xpConf prompt ?+ fn
+
+-- , ("C-t C-<Delete>", sudoSpawn "pm-suspend")
+-- , ("C-t <Delete>", sudoSpawn "pm-hibernate")
