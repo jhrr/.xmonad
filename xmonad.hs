@@ -217,8 +217,7 @@ myKeys host =  [ ("M-u", focusUrgent)
                , ("M-S-s", spawn $
                              case host of
                                Laptop _ -> "systemctl suspend"
-                               _ -> ""
-                 )
+                               _ -> "")
 
                  -- scratchpads
                , ("M-a", spBeckon "alsamixer")
