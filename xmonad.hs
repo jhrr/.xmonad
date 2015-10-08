@@ -28,7 +28,6 @@ import System.Posix.Unistd
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 
-
 main :: IO ()
 main = do
     dzenL <- spawnPipe myXmonadBar  -- dzen left
@@ -267,6 +266,7 @@ mySearchMap method =
     , ((0, xK_e), method egoogle)
     , ((0, xK_b), method github)
     , ((0, xK_i), method images)
+    , ((0, xK_n), method npm)
     , ((0, xK_t), method pb)
     , ((0, xK_p), method pypi)
     ]
@@ -275,6 +275,7 @@ mySearchMap method =
     egoogle = searchEngine "egoogle" "https://encrypted.google.com/#q="
     github = searchEngine "github" "https://github.com/search?q="
     images = searchEngine "images" "http://www.google.com/search?hl=en&tbm=isch&q="
+    npm = searchEngine "npm" "https://www.npmjs.com/search?q="
     pb = searchEngine "pb" "http://tpb.unblock.re/search.php?q="
     pypi = searchEngine "pypi" "https://pypi.python.org/pypi?%3Aaction=search&term="
 
