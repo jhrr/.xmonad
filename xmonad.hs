@@ -62,7 +62,7 @@ data Host = Desktop | Laptop Bool
 
 getHost :: IO Host
 getHost = do
-  hostName <- nodeName `fmap` getSystemID
+  hostName <- fmap nodeName getSystemID
   return $ case hostName of
     "paradise" -> Laptop True
     "despair" -> Desktop
@@ -87,7 +87,7 @@ getScreens = openDisplay "" >>= liftA2 (<*) f closeDisplay
   where f = fmap (zipWith const [0..]) . getScreenInfo
 
 myConfig dzenL host =
-  withUrgencyHook NoUrgencyHook $ defaultConfig
+  withUrgencyHook NoUrgencyHook $ def
         { manageHook = manageDocks
                        <+> myManageHook
                        <+> namedScratchpadManageHook scratchpads
