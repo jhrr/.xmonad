@@ -56,6 +56,9 @@ dzenColours = "-fg '#ffffff' -bg '#000000'"
 invokeConky :: String
 invokeConky = "conky -c ~/.conkyrc-xmonad | "
 
+scrotMessage :: String
+scrotMessage = "dunstify -t 5000 -h string:bgcolor:#FF7878 scrotted"
+
 -- Bool informs us if a Windows key is present.
 data Host = Desktop | Laptop Bool
   deriving (Eq, Read, Show)
@@ -142,11 +145,13 @@ myFocusFollowsMouse = True
 myManageHook :: ManageHook
 myManageHook = composeAll . concat $
     [ [ className =? "Emacs" --> doShift "2" ]
-    , [ className =? "Chromium" --> doShift "3" ]
+    , [ className =? "chromium" --> doShift "3" ]
       -- , [(className =? "Chromium" <&&> resource =? "Dialog") --> doFloat]
     , [ className =? "Firefox" --> doShift "4" ]
     , [ className =? "Evince" --> doShift "5" ]
     , [ className =? "Zathura" --> doShift "5" ]
+    , [ className =? "Java" --> doShift "6" ]
+    -- , [ className =? "Eclipse" --> doShift "6" ]
     , [ className =? "Vlc" --> doShift "6" ]
     , [ className =? "Soulseekqt" --> doShift "7" ]
     , [ className =? "Transmission-gtk" --> doShift "7" ]
@@ -199,7 +204,7 @@ myKeys host =  [ ("M-u", focusUrgent)
                , ("M-g", spawn "firefox")
                , ("M-c", spawn "chromium")
                , ("M-m", spawn "soulseekqt")
-               , ("M-i", spawn "pidgin")
+               , ("M-j", spawn "eclipse")
                , ("M-r", spawn "evince")
                , ("M-s", spawn "skype")
                , ("M-t", spawn "teamspeak3")
@@ -209,8 +214,8 @@ myKeys host =  [ ("M-u", focusUrgent)
                , ("<XF86AudioPrev>", spawn "mpc prev")
                , ("C-M-r", spawn "mpc random")  -- toggle random play mode
                  -- , ("M-<F1>", spawn "mpc pause; xscreensaver-command -lock")
-               , ("M-<Print>", spawn "scrot")
-               , ("M-S-<Print>", spawn "sleep 0.2; scrot -s")
+               , ("M-<Print>",  spawn ("scrot;" ++ scrotMessage))
+               , ("M-S-<Print>", spawn ("sleep 0.2; scrot -s;" ++ scrotMessage))
 
                  -- suspend/hibernate
                , ("M-S-s", spawn $
