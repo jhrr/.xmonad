@@ -303,7 +303,7 @@ viewWeb :: X ()
 viewWeb = windows (W.view "3")
 
 myXPConfig :: XPConfig
-myXPConfig = defaultXPConfig { fgColor = "#000000" , bgColor = "#ff6565" }
+myXPConfig = def { fgColor = "#000000" , bgColor = "#ff6565" }
 
 -- Calculate center of screen rectangle
 centerScreen :: Rational -> ManageHook
